@@ -1,0 +1,212 @@
+
+*,
+*:before,
+*:after {
+    box-sizing: border-box;
+    font-family: 'Comfortaa', cursive;
+}
+
+html, body, p, h1, h2, h3, h4, h5, h6 {
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    font-size: 16px;
+    color: #808080;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-weight: 500;
+}
+
+body {
+    background-color: #eeeeee;
+    color: inherit;
+}
+
+.schedule {
+    color: inherit;
+    border-radius: 5px;
+    background-color: #fff;
+    width: 1200px;
+    padding: 30px;
+    margin: 100px auto;
+}
+
+.filter {
+    color: inherit;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+
+    margin-bottom: 30px;
+}
+
+.week {
+    color: inherit;
+    display: flex;
+    align-items: center;
+}
+
+.week-text {
+    text-align: center;
+    color: inherit;
+    margin: 0 15px;
+    width: 180px;
+}
+
+.week-btn {
+    color: inherit;
+    background: none;
+    border: none;
+    outline: none;
+}
+
+.arrow {
+    border: solid #808080;
+    border-width: 0 3px 3px 0;
+    display: inline-block;
+    padding: 3px;
+}
+
+.right {
+    transform: rotate(-45deg);
+    -webkit-transform: rotate(-45deg);
+}
+
+.left {
+    transform: rotate(135deg);
+    -webkit-transform: rotate(135deg);
+}
+
+.week-btn:hover .arrow {
+    border-color: #0e9ed9;
+}
+
+.filter-dropdown {
+    color: inherit;
+    background: none;
+    border: none;
+    outline: none;
+}
+
+.filter-dropdown:hover {
+    color: #5c3c80;
+}
+
+.filter-dropdown:active {
+    color: #5c3c80 !important;
+}
+
+.dropdown-toggle::after {
+    color: #5c3c80;
+}
+
+.dropdown-item {
+    color: #808080;
+}
+
+.dropdown-item:hover {
+    color: #5c3c80;
+}
+
+.dropdown-item:active {
+    background-color: #c3d1e4;
+}
+
+.schedule-table {
+    color: inherit;
+    text-align: center;
+    width: 100%;
+}
+
+.schedule-table tr {
+    border-top: 1px solid #eee;
+}
+
+.schedule-table th {
+    font-weight: 400;
+    padding: 10px 0;
+}
+
+.schedule-table td {
+    vertical-align: top;
+    padding: 5px 0 15px;
+}
+
+.table-clock {
+    width: 90px;
+    border-right: 1px solid #eee;
+}
+
+.day-header {
+    width: 150px;
+}
+
+.table-time {
+    vertical-align: top;
+    color: #5c3c80;
+    border-right: 1px solid #eee;
+}
+
+.training-card {
+    padding: 10px;
+    margin: 0 5px 10px;
+    background-color: rgb(140, 170, 243);
+    color: #fff;
+    font-size: 0.8rem;
+    text-align: left;
+    border-radius: 3px;
+}
+
+.training-status {
+    margin-bottom: 5px;
+    padding: 3px 0;
+    background-color: rgba(0,0,0,.2);
+    text-align: center;
+}
+
+.training-time {
+    margin-bottom: 5px;
+    font-size: 0.7rem;
+}
+
+.training-title {
+    margin-bottom: 5px;
+    font-size: 1.2rem;
+    font-weight: 700;
+    line-height: 1.2rem;
+}
+
+.training-coach {
+    font-weight: 300;
+}
+
+
+
+
+
+
+
+.add-form {
+    width: 270px;
+    margin: 70px auto 0;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 5px;
+}
+
+.add-form .form-group {
+    background-color: rgb(140, 170, 243);
+    padding: 5px;
+    border-radius: 3px;
+    margin-bottom: 10px;
+}
+.add-form .form-group label{
+    color: #eee;
+}
+.add-form .form-group .form-control {
+    border-radius: 0;
+    width: 220px;
+}
