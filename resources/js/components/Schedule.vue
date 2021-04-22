@@ -202,21 +202,31 @@ export default {
             this.filter.stopDate = moment(d).format('DD.MM.YYYY');
 
             this.weekDays = week;
-        }
+        },
+
+        load() {
+            let request = this.filter;
+            request.startDate = moment(request.startDate, "DD.MM.YYYY").format("YYYY-MM-DD");
+            request.stopDate = moment(request.stopDate, "DD.MM.YYYY").format("YYYY-MM-DD");
+
+            axios.get('/api/trainings', request, {
+                headers: {
+                    "Content-type": "application/json"
+                }
+            }).then(res => {
+                console.log(res.data);
+            })
+        },
     },
     watch: {
-        filter: {
-            deep: true,
-            handler(val) {
-                console.log(val);
-            }
-        }
+
     },
     computed: {
 
     },
     mounted() {
         this.thisWeek();
+        this.load();
     }
 }
 </script>

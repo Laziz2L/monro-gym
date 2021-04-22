@@ -16,8 +16,8 @@ class CreateTrainingsTable extends Migration
         Schema::create('trainings', function (Blueprint $table) {
             $table->id();
             $table->date('date');
-            $table->integer('time_start');
-            $table->integer('time_stop');
+            $table->string('time_start');
+            $table->string('time_stop');
             $table->boolean('available');
             $table->string('coach_name');
 //            $table->integer('coach_id');

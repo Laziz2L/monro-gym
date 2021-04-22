@@ -1847,6 +1847,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var vuejs_datepicker__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vuejs-datepicker */ "./node_modules/vuejs-datepicker/dist/vuejs-datepicker.esm.js");
 /* harmony import */ var vue2_timepicker_src_vue_timepicker_vue__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! vue2-timepicker/src/vue-timepicker.vue */ "./node_modules/vue2-timepicker/src/vue-timepicker.vue");
+/* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! moment */ "./node_modules/moment/moment.js");
+/* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(moment__WEBPACK_IMPORTED_MODULE_2__);
 //
 //
 //
@@ -1877,23 +1879,38 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+
 
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   data: function data() {
     return {
-      date: null,
-      startTime: null,
-      stopTime: null,
-      title: '',
-      coach: ''
+      form: {
+        date: null,
+        startTime: '',
+        stopTime: '',
+        title: '',
+        coach: ''
+      }
     };
   },
   components: {
     Datepicker: vuejs_datepicker__WEBPACK_IMPORTED_MODULE_0__.default,
     VueTimepicker: vue2_timepicker_src_vue_timepicker_vue__WEBPACK_IMPORTED_MODULE_1__.default
   },
-  methods: {}
+  methods: {
+    store: function store() {
+      var request = this.form;
+      request.date = moment__WEBPACK_IMPORTED_MODULE_2___default()(request.date).format('YYYY-MM-DD');
+      axios.post('/api/trainings', request, {
+        headers: {
+          "Content-type": "application/json"
+        }
+      }).then(function (res) {
+        console.log(res.data);
+      });
+    }
+  }
 });
 
 /***/ }),
@@ -2126,19 +2143,25 @@ __webpack_require__.r(__webpack_exports__);
 
       this.filter.stopDate = moment__WEBPACK_IMPORTED_MODULE_0___default()(d).format('DD.MM.YYYY');
       this.weekDays = week;
+    },
+    load: function load() {
+      var request = this.filter;
+      request.startDate = moment__WEBPACK_IMPORTED_MODULE_0___default()(request.startDate, "DD.MM.YYYY").format("YYYY-MM-DD");
+      request.stopDate = moment__WEBPACK_IMPORTED_MODULE_0___default()(request.stopDate, "DD.MM.YYYY").format("YYYY-MM-DD");
+      axios.get('/api/trainings', request, {
+        headers: {
+          "Content-type": "application/json"
+        }
+      }).then(function (res) {
+        console.log(res.data);
+      });
     }
   },
-  watch: {
-    filter: {
-      deep: true,
-      handler: function handler(val) {
-        console.log(val);
-      }
-    }
-  },
+  watch: {},
   computed: {},
   mounted: function mounted() {
     this.thisWeek();
+    this.load();
   }
 });
 
@@ -62885,135 +62908,160 @@ var render = function() {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _c("div", { staticClass: "add-form" }, [
-    _c("form", [
-      _c("h6", [_vm._v("Добавить тренировку")]),
-      _vm._v(" "),
-      _c("br"),
-      _vm._v(" "),
-      _c(
-        "div",
-        { staticClass: "form-group" },
-        [
-          _c("label", { attrs: { for: "date" } }, [_vm._v("выберите дату")]),
-          _vm._v(" "),
-          _c("datepicker", {
-            attrs: { id: "date" },
-            model: {
-              value: _vm.date,
-              callback: function($$v) {
-                _vm.date = $$v
-              },
-              expression: "date"
-            }
-          })
-        ],
-        1
-      ),
-      _vm._v(" "),
-      _c(
-        "div",
-        { staticClass: "form-group" },
-        [
-          _c("label", { attrs: { for: "startTime" } }, [
-            _vm._v("время начала")
-          ]),
-          _c("br"),
-          _vm._v(" "),
-          _c("vue-timepicker", {
-            attrs: { "input-width": "220px", id: "startTime" },
-            model: {
-              value: _vm.startTime,
-              callback: function($$v) {
-                _vm.startTime = $$v
-              },
-              expression: "startTime"
-            }
-          })
-        ],
-        1
-      ),
-      _vm._v(" "),
-      _c(
-        "div",
-        { staticClass: "form-group" },
-        [
-          _c("label", { attrs: { for: "stopTime" } }, [_vm._v("время конца")]),
-          _c("br"),
-          _vm._v(" "),
-          _c("vue-timepicker", {
-            attrs: { "input-width": "220px", id: "stopTime" },
-            model: {
-              value: _vm.stopTime,
-              callback: function($$v) {
-                _vm.stopTime = $$v
-              },
-              expression: "stopTime"
-            }
-          })
-        ],
-        1
-      ),
-      _vm._v(" "),
-      _c("div", { staticClass: "form-group" }, [
-        _c("label", { attrs: { for: "title" } }, [_vm._v("название")]),
+    _c(
+      "form",
+      {
+        on: {
+          submit: function($event) {
+            $event.preventDefault()
+            return _vm.store($event)
+          }
+        }
+      },
+      [
+        _c("h6", [_vm._v("Добавить тренировку")]),
+        _vm._v(" "),
         _c("br"),
         _vm._v(" "),
-        _c("input", {
-          directives: [
-            {
-              name: "model",
-              rawName: "v-model",
-              value: _vm.title,
-              expression: "title"
-            }
-          ],
-          staticClass: "form-control",
-          attrs: { required: "", type: "text", id: "title" },
-          domProps: { value: _vm.title },
-          on: {
-            input: function($event) {
-              if ($event.target.composing) {
-                return
+        _c(
+          "div",
+          { staticClass: "form-group" },
+          [
+            _c("label", { attrs: { for: "date" } }, [_vm._v("выберите дату")]),
+            _vm._v(" "),
+            _c("datepicker", {
+              attrs: { "monday-first": true, id: "date" },
+              model: {
+                value: _vm.form.date,
+                callback: function($$v) {
+                  _vm.$set(_vm.form, "date", $$v)
+                },
+                expression: "form.date"
               }
-              _vm.title = $event.target.value
-            }
-          }
-        })
-      ]),
-      _vm._v(" "),
-      _c("div", { staticClass: "form-group" }, [
-        _c("label", { attrs: { for: "coach" } }, [_vm._v("имя тренера")]),
-        _c("br"),
+            })
+          ],
+          1
+        ),
         _vm._v(" "),
-        _c("input", {
-          directives: [
-            {
-              name: "model",
-              rawName: "v-model",
-              value: _vm.coach,
-              expression: "coach"
-            }
-          ],
-          staticClass: "form-control",
-          attrs: { required: "", type: "text", id: "coach" },
-          domProps: { value: _vm.coach },
-          on: {
-            input: function($event) {
-              if ($event.target.composing) {
-                return
+        _c(
+          "div",
+          { staticClass: "form-group" },
+          [
+            _c("label", { attrs: { for: "startTime" } }, [
+              _vm._v("время начала")
+            ]),
+            _c("br"),
+            _vm._v(" "),
+            _c("vue-timepicker", {
+              attrs: {
+                format: "HH:mm",
+                "input-width": "220px",
+                id: "startTime",
+                "hide-clear-button": "",
+                "close-on-complete": ""
+              },
+              model: {
+                value: _vm.form.startTime,
+                callback: function($$v) {
+                  _vm.$set(_vm.form, "startTime", $$v)
+                },
+                expression: "form.startTime"
               }
-              _vm.coach = $event.target.value
+            })
+          ],
+          1
+        ),
+        _vm._v(" "),
+        _c(
+          "div",
+          { staticClass: "form-group" },
+          [
+            _c("label", { attrs: { for: "stopTime" } }, [
+              _vm._v("время конца")
+            ]),
+            _c("br"),
+            _vm._v(" "),
+            _c("vue-timepicker", {
+              attrs: {
+                format: "HH:mm",
+                "input-width": "220px",
+                id: "stopTime",
+                "hide-clear-button": "",
+                "close-on-complete": ""
+              },
+              model: {
+                value: _vm.form.stopTime,
+                callback: function($$v) {
+                  _vm.$set(_vm.form, "stopTime", $$v)
+                },
+                expression: "form.stopTime"
+              }
+            })
+          ],
+          1
+        ),
+        _vm._v(" "),
+        _c("div", { staticClass: "form-group" }, [
+          _c("label", { attrs: { for: "title" } }, [_vm._v("название")]),
+          _c("br"),
+          _vm._v(" "),
+          _c("input", {
+            directives: [
+              {
+                name: "model",
+                rawName: "v-model",
+                value: _vm.form.title,
+                expression: "form.title"
+              }
+            ],
+            staticClass: "form-control",
+            attrs: { required: "", type: "text", id: "title" },
+            domProps: { value: _vm.form.title },
+            on: {
+              input: function($event) {
+                if ($event.target.composing) {
+                  return
+                }
+                _vm.$set(_vm.form, "title", $event.target.value)
+              }
             }
-          }
-        })
-      ]),
-      _vm._v(" "),
-      _c(
-        "button",
-        { staticClass: "btn btn-primary", attrs: { type: "submit" } },
-        [_vm._v("Добавить")]
-      )
-    ])
+          })
+        ]),
+        _vm._v(" "),
+        _c("div", { staticClass: "form-group" }, [
+          _c("label", { attrs: { for: "coach" } }, [_vm._v("имя тренера")]),
+          _c("br"),
+          _vm._v(" "),
+          _c("input", {
+            directives: [
+              {
+                name: "model",
+                rawName: "v-model",
+                value: _vm.form.coach,
+                expression: "form.coach"
+              }
+            ],
+            staticClass: "form-control",
+            attrs: { required: "", type: "text", id: "coach" },
+            domProps: { value: _vm.form.coach },
+            on: {
+              input: function($event) {
+                if ($event.target.composing) {
+                  return
+                }
+                _vm.$set(_vm.form, "coach", $event.target.value)
+              }
+            }
+          })
+        ]),
+        _vm._v(" "),
+        _c(
+          "button",
+          { staticClass: "btn btn-primary", attrs: { type: "submit" } },
+          [_vm._v("Добавить")]
+        )
+      ]
+    )
   ])
 }
 var staticRenderFns = []
