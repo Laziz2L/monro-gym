@@ -23,7 +23,7 @@
                 <label for="coach">имя тренера</label><br>
                 <input required type="text" class="form-control" id="coach" v-model="form.coach">
             </div>
-            <button type="submit" class="btn btn-primary">Добавить</button>
+            <button type="submit" class="btn btn-success">Добавить</button>
         </form>
     </div>
 </template>

@@ -1963,6 +1963,53 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! moment */ "./node_modules/moment/moment.js");
 /* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(moment__WEBPACK_IMPORTED_MODULE_0__);
+function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
+
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+
+function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
+
+function _iterableToArrayLimit(arr, i) { if (typeof Symbol === "undefined" || !(Symbol.iterator in Object(arr))) return; var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
+
+function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
+
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -2029,57 +2076,86 @@ __webpack_require__.r(__webpack_exports__);
         stopDate: null,
         coach: "all"
       },
-      coaches: ["Cкала", "Стетхем", "Кали Масл", "Зидан"],
-      table: [{
-        hour: '09',
-        mon: [{
-          status: "свободно",
-          timeStart: "09:00",
-          timeStop: "09:45",
-          duration: "45 мин",
-          title: "Аквааэробика",
-          coach: "Скала"
-        }],
-        tue: [],
-        wed: [],
-        thu: [{
-          status: "свободно",
-          timeStart: "09:00",
-          timeStop: "10:00",
-          duration: "1 час",
-          title: "Каратэ",
-          coach: "Стетхем"
-        }, {
-          status: "свободно",
-          timeStart: "09:10",
-          timeStop: "09:55",
-          duration: "45 мин",
-          title: "Футбол",
-          coach: "Зидан"
-        }],
-        fri: [],
-        sat: [],
-        sun: []
-      }, {
-        hour: '11',
-        mon: [],
-        tue: [{
-          status: "свободно",
-          timeStart: "11:00",
-          timeStop: "11:55",
-          duration: "55 мин",
-          title: "Хайфи",
-          coach: "Кали Масл"
-        }],
-        wed: [],
-        thu: [],
-        fri: [],
-        sat: [],
-        sun: []
-      }]
+      coaches: ["Скала", "Стетхем", "Кали Масл", "Зидан"],
+      table: [// {
+        //     hour: '09',
+        //     mon: [
+        //         {
+        //             status: "свободно",
+        //             timeStart: "09:00",
+        //             timeStop: "09:45",
+        //             title: "Аквааэробика",
+        //             coach: "Скала"
+        //         }
+        //     ],
+        //     tue: [],
+        //     wed: [],
+        //     thu: [
+        //         {
+        //             status: "свободно",
+        //             timeStart: "09:00",
+        //             timeStop: "10:00",
+        //             title: "Каратэ",
+        //             coach: "Стетхем"
+        //         },
+        //         {
+        //             status: "свободно",
+        //             timeStart: "09:10",
+        //             timeStop: "09:55",
+        //             title: "Футбол",
+        //             coach: "Зидан"
+        //         }
+        //     ],
+        //     fri: [],
+        //     sat: [],
+        //     sun: [],
+        // },
+        // {
+        //     hour: '11',
+        //     mon: [],
+        //     tue: [
+        //         {
+        //             status: "свободно",
+        //             timeStart: "11:00",
+        //             timeStop: "11:55",
+        //             title: "Хайфи",
+        //             coach: "Кали Масл"
+        //         }
+        //     ],
+        //     wed: [],
+        //     thu: [],
+        //     fri: [],
+        //     sat: [],
+        //     sun: [],
+        // }
+      ],
+      clientName: '',
+      chosenId: 0,
+      showModal: false
     };
   },
   methods: {
+    show: function show(id) {
+      this.chosenId = id;
+      this.showModal = true;
+    },
+    hide: function hide() {
+      this.showModal = false;
+    },
+    book: function book() {
+      axios.post('/api/trainings/book', {
+        id: this.chosenId,
+        name: this.clientName
+      }, {
+        headers: {
+          "Content-type": "application/json"
+        }
+      }).then(function (res) {
+        if (res.data.status) {
+          console.log(res.data.res);
+        }
+      });
+    },
     thisWeek: function thisWeek() {
       var d = new Date();
 
@@ -2144,20 +2220,114 @@ __webpack_require__.r(__webpack_exports__);
       this.filter.stopDate = moment__WEBPACK_IMPORTED_MODULE_0___default()(d).format('DD.MM.YYYY');
       this.weekDays = week;
     },
+    groupByHours: function groupByHours(table) {
+      var hours = [];
+      var res = {};
+
+      for (var i = 0; i < table.length; i++) {
+        var hour = table[i].time_start.slice(0, 2);
+
+        if (!hours.includes(hour)) {
+          hours.push(hour);
+          res[hour] = [];
+        }
+
+        res[hour].push(table[i]);
+      }
+
+      return res;
+    },
+    groupByDays: function groupByDays(hour) {
+      var res = {
+        mon: [],
+        tue: [],
+        wed: [],
+        thu: [],
+        fri: [],
+        sat: [],
+        sun: []
+      };
+
+      for (var i = 0; i < hour.length; i++) {
+        var day = moment__WEBPACK_IMPORTED_MODULE_0___default()(hour[i].date, 'YYYY-MM-DD').format('d');
+
+        switch (day) {
+          case '1':
+            res.mon.push(hour[i]);
+            break;
+
+          case '2':
+            res.tue.push(hour[i]);
+            break;
+
+          case '3':
+            res.wed.push(hour[i]);
+            break;
+
+          case '4':
+            res.thu.push(hour[i]);
+            break;
+
+          case '5':
+            res.fri.push(hour[i]);
+            break;
+
+          case '6':
+            res.sat.push(hour[i]);
+            break;
+
+          case '0':
+            res.sun.push(hour[i]);
+            break;
+        }
+      }
+
+      return res;
+    },
     load: function load() {
-      var request = this.filter;
-      request.startDate = moment__WEBPACK_IMPORTED_MODULE_0___default()(request.startDate, "DD.MM.YYYY").format("YYYY-MM-DD");
-      request.stopDate = moment__WEBPACK_IMPORTED_MODULE_0___default()(request.stopDate, "DD.MM.YYYY").format("YYYY-MM-DD");
-      axios.get('/api/trainings', request, {
+      var _this = this;
+
+      var request = {
+        coach: this.filter.coach
+      };
+      request.startDate = moment__WEBPACK_IMPORTED_MODULE_0___default()(this.filter.startDate, "DD.MM.YYYY").format("YYYY-MM-DD");
+      request.stopDate = moment__WEBPACK_IMPORTED_MODULE_0___default()(this.filter.stopDate, "DD.MM.YYYY").format("YYYY-MM-DD");
+      axios.post('/api/trainings/load', request, {
         headers: {
           "Content-type": "application/json"
         }
       }).then(function (res) {
-        console.log(res.data);
+        if (res.data.status) {
+          var table = res.data.table;
+
+          var hours = _this.groupByHours(table);
+
+          table = [];
+
+          for (var _i = 0, _Object$entries = Object.entries(hours); _i < _Object$entries.length; _i++) {
+            var _Object$entries$_i = _slicedToArray(_Object$entries[_i], 2),
+                key = _Object$entries$_i[0],
+                value = _Object$entries$_i[1];
+
+            var hour = _this.groupByDays(value);
+
+            hour['hour'] = key;
+            table.push(hour);
+          }
+
+          _this.table = table;
+        }
       });
     }
   },
-  watch: {},
+  watch: {
+    filter: {
+      deep: true,
+      handler: function handler() {
+        this.load();
+      }
+    }
+  },
   computed: {},
   mounted: function mounted() {
     this.thisWeek();
@@ -63057,7 +63227,7 @@ var render = function() {
         _vm._v(" "),
         _c(
           "button",
-          { staticClass: "btn btn-primary", attrs: { type: "submit" } },
+          { staticClass: "btn btn-success", attrs: { type: "submit" } },
           [_vm._v("Добавить")]
         )
       ]
@@ -63262,7 +63432,11 @@ var render = function() {
                       _c("div", { staticClass: "training-status" }, [
                         _vm._v(
                           "\n                        " +
-                            _vm._s(training.status) +
+                            _vm._s(
+                              training.available
+                                ? "свободно"
+                                : training.client_name
+                            ) +
                             "\n                    "
                         )
                       ]),
@@ -63270,12 +63444,10 @@ var render = function() {
                       _c("div", { staticClass: "training-time" }, [
                         _vm._v(
                           "\n                        " +
-                            _vm._s(training.timeStart) +
+                            _vm._s(training.time_start) +
                             " - " +
-                            _vm._s(training.timeStop) +
-                            " (" +
-                            _vm._s(training.duration) +
-                            ")\n                    "
+                            _vm._s(training.time_stop) +
+                            "\n                    "
                         )
                       ]),
                       _vm._v(" "),
@@ -63290,10 +63462,29 @@ var render = function() {
                       _c("div", { staticClass: "training-coach" }, [
                         _vm._v(
                           "\n                        " +
-                            _vm._s(training.coach) +
+                            _vm._s(training.coach_name) +
                             "\n                    "
                         )
-                      ])
+                      ]),
+                      _vm._v(" "),
+                      training.available
+                        ? _c(
+                            "button",
+                            {
+                              staticClass: "training-btn",
+                              on: {
+                                click: function($event) {
+                                  return _vm.show(training.id)
+                                }
+                              }
+                            },
+                            [
+                              _vm._v(
+                                "\n                        Записаться\n                    "
+                              )
+                            ]
+                          )
+                        : _vm._e()
                     ])
                   }),
                   0
@@ -63305,7 +63496,114 @@ var render = function() {
         })
       ],
       2
-    )
+    ),
+    _vm._v(" "),
+    _vm.showModal
+      ? _c(
+          "div",
+          [
+            _c("transition", { attrs: { name: "modal" } }, [
+              _c("div", { staticClass: "modal-mask" }, [
+                _c("div", { staticClass: "modal-wrapper" }, [
+                  _c(
+                    "div",
+                    {
+                      staticClass: "modal-dialog",
+                      attrs: { role: "document" }
+                    },
+                    [
+                      _c("div", { staticClass: "modal-content" }, [
+                        _c("div", { staticClass: "modal-header" }, [
+                          _c("h5", { staticClass: "modal-title" }, [
+                            _vm._v("Запись на тренировку")
+                          ]),
+                          _vm._v(" "),
+                          _c(
+                            "button",
+                            {
+                              staticClass: "close",
+                              attrs: {
+                                type: "button",
+                                "data-dismiss": "modal",
+                                "aria-label": "Close"
+                              },
+                              on: { click: _vm.hide }
+                            },
+                            [
+                              _c("span", { attrs: { "aria-hidden": "true" } }, [
+                                _vm._v("×")
+                              ])
+                            ]
+                          )
+                        ]),
+                        _vm._v(" "),
+                        _c("div", { staticClass: "modal-body" }, [
+                          _c(
+                            "form",
+                            {
+                              on: {
+                                submit: function($event) {
+                                  $event.preventDefault()
+                                }
+                              }
+                            },
+                            [
+                              _c("div", { staticClass: "form-group" }, [
+                                _c("label", { attrs: { for: "clientName" } }, [
+                                  _vm._v("Ваше имя:")
+                                ]),
+                                _vm._v(" "),
+                                _c("input", {
+                                  directives: [
+                                    {
+                                      name: "model",
+                                      rawName: "v-model",
+                                      value: _vm.clientName,
+                                      expression: "clientName"
+                                    }
+                                  ],
+                                  staticClass: "form-control",
+                                  attrs: {
+                                    type: "text",
+                                    id: "clientName",
+                                    required: ""
+                                  },
+                                  domProps: { value: _vm.clientName },
+                                  on: {
+                                    input: function($event) {
+                                      if ($event.target.composing) {
+                                        return
+                                      }
+                                      _vm.clientName = $event.target.value
+                                    }
+                                  }
+                                })
+                              ]),
+                              _vm._v(" "),
+                              _c("br"),
+                              _vm._v(" "),
+                              _c(
+                                "button",
+                                {
+                                  staticClass: "btn btn-success",
+                                  attrs: { type: "submit" },
+                                  on: { click: _vm.book }
+                                },
+                                [_vm._v("Записаться")]
+                              )
+                            ]
+                          )
+                        ])
+                      ])
+                    ]
+                  )
+                ])
+              ])
+            ])
+          ],
+          1
+        )
+      : _vm._e()
   ])
 }
 var staticRenderFns = [

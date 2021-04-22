@@ -14,7 +14,6 @@ html, body, p, h1, h2, h3, h4, h5, h6 {
 html {
     font-size: 16px;
     color: #808080;
-    height: 100%;
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -24,7 +23,6 @@ h1, h2, h3, h4, h5, h6 {
 body {
     background-color: #eeeeee;
     color: inherit;
-    height: 100%;
 }
 
 .schedule {
@@ -162,6 +160,10 @@ body {
     border-radius: 3px;
 }
 
+.training-card:hover {
+    background-color: rgb(126, 152, 217);
+}
+
 .training-status {
     margin-bottom: 5px;
     padding: 3px 0;
@@ -183,8 +185,33 @@ body {
 
 .training-coach {
     font-weight: 300;
+    margin-bottom: 5px;
 }
 
+.training-btn {
+    border: 0;
+    outline: 0;
+
+    font-size: inherit;
+    padding: 4px;
+    color: #fff;
+    background-color: #41B883;
+    text-align: center;
+    width: 100%;
+    border-radius: 2px;
+}
+
+.training-btn:hover {
+    background-color: #389f71;
+}
+
+.training-btn:active {
+    background-color: #2e815c;
+}
+
+.training-btn:focus {
+    outline: 0;
+}
 
 
 
@@ -211,4 +238,26 @@ body {
 .add-form .form-group .form-control {
     border-radius: 0;
     width: 220px;
+}
+
+.btn-success {
+    background-color: #41B883;
+    border: 0;
+}
+
+.modal-mask {
+    position: fixed;
+    z-index: 9998;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, .5);
+    display: table;
+    transition: opacity .3s ease;
+}
+
+.modal-wrapper {
+    display: table-cell;
+    vertical-align: middle;
 }

@@ -5,18 +5,54 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use App\Models\Training;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
 class TrainingController extends Controller
 {
+    public function book(Request $request)
+    {
+        try {
+            $training = Training::find($request->input('id'));
+            $training->available = false;
+            $training->client_name = $request->input('name');
+            $res = $training->save();
+            return [
+                'status' => true,
+                'res' => $res
+            ];
+        } catch (\Exception $e) {
+            return $e->getMessage();
+        }
+    }
+
+    public function load(Request $request)
+    {
+        try {
+            $res = Training::select('*')
+                ->whereBetween('date', [$request->input('startDate'), $request->input('stopDate')]);
+            if ($request->input('coach') != "all") {
+                $res = $res->where('coach_name', $request->input('coach'));
+            }
+            $res = $res->get();
+            return [
+                'status' => true,
+                'table' => $res
+            ];
+        } catch (\Exception $e) {
+            return $e->getMessage();
+        }
+    }
+
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @param Request $request
+     * @return array
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+
     }
 
     /**
@@ -49,7 +85,7 @@ class TrainingController extends Controller
             ]
         );
 
-        if($validator->fails()) {
+        if ($validator->fails()) {
             return [
                 "status" => false,
                 "errors" => $validator->messages()
