@@ -27,7 +27,7 @@
             <schedule coach-user="true"></schedule>
         @else
             <add coach-name="no" client-name='{{ \Illuminate\Support\Facades\Auth::user()->name }}'></add>
-            <schedule coach-user="false"></schedule>
+            <schedule coach-user="false" client-name='{{ \Illuminate\Support\Facades\Auth::user()->name }}'></schedule>
         @endif
     @endauth
 </div>

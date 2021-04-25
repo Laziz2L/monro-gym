@@ -15,6 +15,9 @@ class CreateCapacitiesTable extends Migration
     {
         Schema::create('capacities', function (Blueprint $table) {
             $table->id();
+            $table->date('date');
+            $table->string('hour');
+            $table->integer('value');
             $table->timestamps();
         });
     }

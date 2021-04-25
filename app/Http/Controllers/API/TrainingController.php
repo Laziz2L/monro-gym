@@ -17,26 +17,80 @@ class TrainingController extends Controller
             $res = $training->delete();
             return [
                 'status' => true,
-                'res' => $res
+                'res' => $res,
+                'msg' => 'Успешно удалено!'
             ];
         } catch (\Exception $e) {
-            return $e->getMessage();
+            return [
+                'status' => false,
+                'msg' => $e->getMessage()
+            ];
         }
     }
 
     public function book(Request $request)
     {
         try {
+            $clientsCount = 1;
+
             $training = Training::find($request->input('id'));
+
+            $capacityQuery = DB::table('capacities')->select('value')
+                ->where('date', $training->date)
+                ->where('hour', substr($training->time_start, 0, 2));
+
+            $capacity = 0;
+            if ($capacityQuery->exists()) {
+                $capacity = $capacityQuery->first()->value;
+            }
+
+            if ($capacity >= 2) {
+                return [
+                    'status' => false,
+                    'msg' => 'На это время мест больше нет'
+                ];
+            }
+
+            $client_name = $request->input('name');
+            if ($request->input('second')) {
+                if ($capacity == 1) {
+                    return [
+                        'status' => false,
+                        'msg' => 'На это время места для двоих не хватит'
+                    ];
+                }
+                $clientsCount = 2;
+                $client_name = $client_name . "+" . $request->input('second');
+            }
+
+
+            if (!DB::table('capacities')->updateOrInsert(
+                [
+                    'date' => $training->date,
+                    'hour' => substr($training->time_start, 0, 2)
+                ],
+                [
+                    'value' => ($capacity + $clientsCount)
+                ]
+            )) return [
+                'status' => false,
+                'msg' => 'capacity table error'
+            ];
+
+
             $training->available = false;
-            $training->client_name = $request->input('name');
+            $training->client_name = $client_name;
             $res = $training->save();
             return [
                 'status' => true,
-                'res' => $res
+                'res' => $res,
+                'msg' => 'Успешно записано!'
             ];
         } catch (\Exception $e) {
-            return $e->getMessage();
+            return [
+                'status' => false,
+                'msg' => $e->getMessage()
+            ];
         }
     }
 
@@ -54,7 +108,10 @@ class TrainingController extends Controller
                 'table' => $res
             ];
         } catch (\Exception $e) {
-            return $e->getMessage();
+            return [
+                'status' => false,
+                'msg' => $e->getMessage()
+            ];
         }
     }
 
@@ -66,7 +123,7 @@ class TrainingController extends Controller
      */
     public function index(Request $request)
     {
-
+        //
     }
 
     /**
@@ -88,60 +145,95 @@ class TrainingController extends Controller
      */
     public function store(Request $request)
     {
-        $validator = Validator::make(
-            $request->all(),
-            [
-                "date" => ['required'],
-                "startTime" => ['required'],
-                "stopTime" => ['required'],
-                "title" => ['required']
-            ]
-        );
+        try {
+            $validator = Validator::make(
+                $request->all(),
+                [
+                    "date" => ['required'],
+                    "startTime" => ['required'],
+                    "stopTime" => ['required'],
+                    "title" => ['required']
+                ]
+            );
 
-        if ($validator->fails()) {
+            if ($validator->fails()) {
+                return [
+                    "status" => false,
+                    "msg" => $validator->messages()
+                ];
+            }
+
+            //        dd([
+            //            'date' => $request->input('date'),
+            //            'time_start' => $request->input('startTime'),
+            //            'time_stop' => $request->input('stopTime'),
+            //            'available' => true,
+            //            'coach_name' => $request->input('coach'),
+            //            'title' => $request->input('title'),
+            //        ]);
+
+            $capacityQuery = DB::table('capacities')->select('value')
+                ->where('date', $request->input('date'))
+                ->where('hour', substr($request->input('startTime'), 0, 2));
+
+            $capacity = 0;
+
+            if ($capacityQuery->exists()) {
+                $capacity = $capacityQuery->first()->value;
+            }
+
+            if ($capacity >= 2) {
+                return [
+                    'status' => false,
+                    'msg' => 'На это время мест больше нет'
+                ];
+            }
+
+            if ($request->input('coach') != 'no') {
+                $training = Training::create([
+                    'date' => $request->input('date'),
+                    'time_start' => $request->input('startTime'),
+                    'time_stop' => $request->input('stopTime'),
+                    'available' => true,
+                    'coach_name' => $request->input('coach'),
+                    'title' => $request->input('title'),
+                ]);
+            } else {
+                if (!DB::table('capacities')->updateOrInsert(
+                    [
+                        'date' => $request->input('date'),
+                        'hour' => substr($request->input('startTime'), 0, 2)
+                    ],
+                    [
+                        'value' => ($capacity + 1)
+                    ]
+                )) return [
+                    'status' => false,
+                    'msg' => 'capacity table error'
+                ];
+
+                $training = Training::create([
+                    'date' => $request->input('date'),
+                    'time_start' => $request->input('startTime'),
+                    'time_stop' => $request->input('stopTime'),
+                    'available' => false,
+                    'coach_name' => 'Без тренера',
+                    'client_name' => $request->input('client'),
+                    'title' => $request->input('title'),
+                ]);
+            }
+
             return [
-                "status" => false,
-                "errors" => $validator->messages()
+                "status" => true,
+                "training" => $training,
+                "msg" => "Успешно записано!"
+            ];
+        } catch (\Exception $e) {
+            return [
+                'status' => false,
+                'msg' => $e->getMessage()
             ];
         }
-
-//        dd([
-//            'date' => $request->input('date'),
-//            'time_start' => $request->input('startTime'),
-//            'time_stop' => $request->input('stopTime'),
-//            'available' => true,
-//            'coach_name' => $request->input('coach'),
-//            'title' => $request->input('title'),
-//        ]);
-
-        if ($request->input('coach') != 'no') {
-            $training = Training::create([
-                'date' => $request->input('date'),
-                'time_start' => $request->input('startTime'),
-                'time_stop' => $request->input('stopTime'),
-                'available' => true,
-                'coach_name' => $request->input('coach'),
-                'title' => $request->input('title'),
-            ]);
-        }
-        else {
-            $training = Training::create([
-                'date' => $request->input('date'),
-                'time_start' => $request->input('startTime'),
-                'time_stop' => $request->input('stopTime'),
-                'available' => false,
-                'coach_name' => 'Без тренера',
-                'client_name' => $request->input('client'),
-                'title' => $request->input('title'),
-            ]);
-        }
-
-
-
-        return [
-            "status" => true,
-            "training" => $training
-        ];
     }
 
     /**

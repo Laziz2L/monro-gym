@@ -71,13 +71,23 @@
                                     </button>
                                 </div>
                                 <div class="modal-body">
-                                    <form @submit.prevent="">
+                                    <form @submit.prevent="book">
                                         <div class="form-group">
                                             <label for="clientName">Ваше имя:</label>
-                                            <input type="text" class="form-control" id="clientName" v-model="clientName" required>
+                                            <input type="text" class="form-control" id="clientName" v-model="clientName" readonly>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <input type="checkbox" id="clientNameCheck" v-model="showSecondName">
+                                            <label for="clientNameCheck"> Нас будет двое</label>
+                                        </div>
+
+                                        <div v-if="showSecondName" class="form-group">
+                                            <label for="clientName2">Второе имя:</label>
+                                            <input type="text" class="form-control" id="clientName2" v-model="secondName" required>
                                         </div>
                                         <br>
-                                        <button type="submit" class="btn btn-success" @click="book">Записаться</button>
+                                        <button type="submit" class="btn btn-success">Записаться</button>
                                     </form>
                                 </div>
                             </div>
@@ -109,7 +119,7 @@
 import moment from 'moment';
 
 export default {
-    props: ['coachUser'],
+    props: ['coachUser', 'clientName'],
     data() {
         return {
             currentMonday: null,
@@ -180,10 +190,11 @@ export default {
                 // }
             ],
 
-            clientName: '',
+            secondName: '',
             chosenId: 0,
 
             showModal: false,
+            showSecondName: false,
         }
     },
     methods: {
@@ -195,16 +206,21 @@ export default {
             this.showModal = false;
         },
         book: function () {
-            axios.post('/api/trainings/book', {id: this.chosenId, name: this.clientName}, {
+            let request = {id: this.chosenId, name: this.clientName};
+            if (this.showSecondName) {
+                request.second = this.secondName;
+            }
+            axios.post('/api/trainings/book', request, {
                 headers: {
                     "Content-type": "application/json"
                 }
             }).then(res => {
                 if (res.data.status) {
-                    console.log(res.data.res)
                     this.load();
                     this.hide();
+                    this.showSecondName = false;
                 }
+                alert(res.data.msg);
             })
         },
         pop: function () {
@@ -214,10 +230,10 @@ export default {
                 }
             }).then(res => {
                 if (res.data.status) {
-                    console.log(res.data.res)
                     this.load();
                     this.hide();
                 }
+                alert(res.data.msg);
             })
         },
         thisWeek: function () {
@@ -375,6 +391,9 @@ export default {
                     });
 
                     this.table = table;
+                }
+                else {
+                    alert(res.dats.msg);
                 }
             })
         },

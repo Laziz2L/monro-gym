@@ -71,7 +71,7 @@ export default {
                     "Content-type": "application/json"
                 }
             }).then(res => {
-                console.log(res.data);
+                alert(res.data.msg);
             })
         }
     }

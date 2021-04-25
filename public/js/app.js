@@ -1920,7 +1920,7 @@ __webpack_require__.r(__webpack_exports__);
           "Content-type": "application/json"
         }
       }).then(function (res) {
-        console.log(res.data);
+        alert(res.data.msg);
       });
     }
   }
@@ -2095,9 +2095,19 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
-  props: ['coachUser'],
+  props: ['coachUser', 'clientName'],
   data: function data() {
     return {
       currentMonday: null,
@@ -2162,9 +2172,10 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
         //     sun: [],
         // }
       ],
-      clientName: '',
+      secondName: '',
       chosenId: 0,
-      showModal: false
+      showModal: false,
+      showSecondName: false
     };
   },
   methods: {
@@ -2178,21 +2189,29 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
     book: function book() {
       var _this = this;
 
-      axios.post('/api/trainings/book', {
+      var request = {
         id: this.chosenId,
         name: this.clientName
-      }, {
+      };
+
+      if (this.showSecondName) {
+        request.second = this.secondName;
+      }
+
+      axios.post('/api/trainings/book', request, {
         headers: {
           "Content-type": "application/json"
         }
       }).then(function (res) {
         if (res.data.status) {
-          console.log(res.data.res);
-
           _this.load();
 
           _this.hide();
+
+          _this.showSecondName = false;
         }
+
+        alert(res.data.msg);
       });
     },
     pop: function pop() {
@@ -2206,12 +2225,12 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
         }
       }).then(function (res) {
         if (res.data.status) {
-          console.log(res.data.res);
-
           _this2.load();
 
           _this2.hide();
         }
+
+        alert(res.data.msg);
       });
     },
     thisWeek: function thisWeek() {
@@ -2377,6 +2396,8 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
             return parseInt(a.hour) - parseInt(b.hour);
           });
           _this3.table = table;
+        } else {
+          alert(res.dats.msg);
         }
       });
     }
@@ -63685,6 +63706,7 @@ var render = function() {
                                   on: {
                                     submit: function($event) {
                                       $event.preventDefault()
+                                      return _vm.book($event)
                                     }
                                   }
                                 },
@@ -63709,7 +63731,7 @@ var render = function() {
                                       attrs: {
                                         type: "text",
                                         id: "clientName",
-                                        required: ""
+                                        readonly: ""
                                       },
                                       domProps: { value: _vm.clientName },
                                       on: {
@@ -63723,14 +63745,105 @@ var render = function() {
                                     })
                                   ]),
                                   _vm._v(" "),
+                                  _c("div", { staticClass: "form-group" }, [
+                                    _c("input", {
+                                      directives: [
+                                        {
+                                          name: "model",
+                                          rawName: "v-model",
+                                          value: _vm.showSecondName,
+                                          expression: "showSecondName"
+                                        }
+                                      ],
+                                      attrs: {
+                                        type: "checkbox",
+                                        id: "clientNameCheck"
+                                      },
+                                      domProps: {
+                                        checked: Array.isArray(
+                                          _vm.showSecondName
+                                        )
+                                          ? _vm._i(_vm.showSecondName, null) >
+                                            -1
+                                          : _vm.showSecondName
+                                      },
+                                      on: {
+                                        change: function($event) {
+                                          var $$a = _vm.showSecondName,
+                                            $$el = $event.target,
+                                            $$c = $$el.checked ? true : false
+                                          if (Array.isArray($$a)) {
+                                            var $$v = null,
+                                              $$i = _vm._i($$a, $$v)
+                                            if ($$el.checked) {
+                                              $$i < 0 &&
+                                                (_vm.showSecondName = $$a.concat(
+                                                  [$$v]
+                                                ))
+                                            } else {
+                                              $$i > -1 &&
+                                                (_vm.showSecondName = $$a
+                                                  .slice(0, $$i)
+                                                  .concat($$a.slice($$i + 1)))
+                                            }
+                                          } else {
+                                            _vm.showSecondName = $$c
+                                          }
+                                        }
+                                      }
+                                    }),
+                                    _vm._v(" "),
+                                    _c(
+                                      "label",
+                                      { attrs: { for: "clientNameCheck" } },
+                                      [_vm._v(" Нас будет двое")]
+                                    )
+                                  ]),
+                                  _vm._v(" "),
+                                  _vm.showSecondName
+                                    ? _c("div", { staticClass: "form-group" }, [
+                                        _c(
+                                          "label",
+                                          { attrs: { for: "clientName2" } },
+                                          [_vm._v("Второе имя:")]
+                                        ),
+                                        _vm._v(" "),
+                                        _c("input", {
+                                          directives: [
+                                            {
+                                              name: "model",
+                                              rawName: "v-model",
+                                              value: _vm.secondName,
+                                              expression: "secondName"
+                                            }
+                                          ],
+                                          staticClass: "form-control",
+                                          attrs: {
+                                            type: "text",
+                                            id: "clientName2",
+                                            required: ""
+                                          },
+                                          domProps: { value: _vm.secondName },
+                                          on: {
+                                            input: function($event) {
+                                              if ($event.target.composing) {
+                                                return
+                                              }
+                                              _vm.secondName =
+                                                $event.target.value
+                                            }
+                                          }
+                                        })
+                                      ])
+                                    : _vm._e(),
+                                  _vm._v(" "),
                                   _c("br"),
                                   _vm._v(" "),
                                   _c(
                                     "button",
                                     {
                                       staticClass: "btn btn-success",
-                                      attrs: { type: "submit" },
-                                      on: { click: _vm.book }
+                                      attrs: { type: "submit" }
                                     },
                                     [_vm._v("Записаться")]
                                   )
