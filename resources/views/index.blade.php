@@ -15,7 +15,21 @@
 <body>
 
 <div id="app">
-    <router-view></router-view>
+
+    @auth
+        <form id="logout-form" action="{{ route('logout') }}" method="POST">
+            @csrf
+            <button type="submit">Выйти</button>
+        </form>
+
+        @if(\Illuminate\Support\Facades\Auth::user()->coach)
+            <add coach-name="{{\Illuminate\Support\Facades\Auth::user()->name}}" client-name='no'></add>
+            <schedule coach-user="true"></schedule>
+        @else
+            <add coach-name="no" client-name='{{ \Illuminate\Support\Facades\Auth::user()->name }}'></add>
+            <schedule coach-user="false"></schedule>
+        @endif
+    @endauth
 </div>
 
 <script src="{{asset('js/app.js')}}"></script>

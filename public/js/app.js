@@ -1879,10 +1879,15 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
 
 
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
+  props: ['coachName', 'clientName'],
   data: function data() {
     return {
       form: {
@@ -1890,7 +1895,8 @@ __webpack_require__.r(__webpack_exports__);
         startTime: '',
         stopTime: '',
         title: '',
-        coach: ''
+        client: this.clientName,
+        coach: this.coachName
       }
     };
   },
@@ -1901,6 +1907,13 @@ __webpack_require__.r(__webpack_exports__);
   methods: {
     store: function store() {
       var request = this.form;
+
+      if (this.coachName == 'no') {
+        request.title = 'Тренировка';
+        var stopHour = parseInt(request.startTime.substring(0, 1), 10) + 1;
+        request.stopTime = stopHour + request.startTime.substring(1, request.startTime.length);
+      }
+
       request.date = moment__WEBPACK_IMPORTED_MODULE_2___default()(request.date).format('YYYY-MM-DD');
       axios.post('/api/trainings', request, {
         headers: {
@@ -2063,8 +2076,28 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
+  props: ['coachUser'],
   data: function data() {
     return {
       currentMonday: null,
@@ -2076,7 +2109,7 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
         stopDate: null,
         coach: "all"
       },
-      coaches: ["Скала", "Стетхем", "Кали Масл", "Зидан"],
+      coaches: ["Татьяна", "Азалия"],
       table: [// {
         //     hour: '09',
         //     mon: [
@@ -2143,6 +2176,8 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
       this.showModal = false;
     },
     book: function book() {
+      var _this = this;
+
       axios.post('/api/trainings/book', {
         id: this.chosenId,
         name: this.clientName
@@ -2153,6 +2188,29 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
       }).then(function (res) {
         if (res.data.status) {
           console.log(res.data.res);
+
+          _this.load();
+
+          _this.hide();
+        }
+      });
+    },
+    pop: function pop() {
+      var _this2 = this;
+
+      axios.post('/api/trainings/pop', {
+        id: this.chosenId
+      }, {
+        headers: {
+          "Content-type": "application/json"
+        }
+      }).then(function (res) {
+        if (res.data.status) {
+          console.log(res.data.res);
+
+          _this2.load();
+
+          _this2.hide();
         }
       });
     },
@@ -2285,7 +2343,7 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
       return res;
     },
     load: function load() {
-      var _this = this;
+      var _this3 = this;
 
       var request = {
         coach: this.filter.coach
@@ -2300,7 +2358,7 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
         if (res.data.status) {
           var table = res.data.table;
 
-          var hours = _this.groupByHours(table);
+          var hours = _this3.groupByHours(table);
 
           table = [];
 
@@ -2309,13 +2367,16 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
                 key = _Object$entries$_i[0],
                 value = _Object$entries$_i[1];
 
-            var hour = _this.groupByDays(value);
+            var hour = _this3.groupByDays(value);
 
             hour['hour'] = key;
             table.push(hour);
           }
 
-          _this.table = table;
+          table.sort(function (a, b) {
+            return parseInt(a.hour) - parseInt(b.hour);
+          });
+          _this3.table = table;
         }
       });
     }
@@ -2350,7 +2411,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var _components_Add__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../components/Add */ "./resources/js/components/Add.vue");
 /* harmony import */ var _components_Schedule__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../components/Schedule */ "./resources/js/components/Schedule.vue");
-//
 //
 //
 //
@@ -2406,8 +2466,8 @@ Vue.component('add', __webpack_require__(/*! ./components/Add.vue */ "./resource
 
 
 var app = new Vue({
-  el: '#app',
-  router: _router__WEBPACK_IMPORTED_MODULE_0__.default
+  el: '#app' // router
+
 });
 
 /***/ }),
@@ -63078,6 +63138,18 @@ var render = function() {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _c("div", { staticClass: "add-form" }, [
+    _c("h6", [
+      _vm._v(
+        _vm._s(
+          _vm.coachName == "no"
+            ? "Записаться без тренера"
+            : "Добавить тренировку"
+        )
+      )
+    ]),
+    _vm._v(" "),
+    _c("br"),
+    _vm._v(" "),
     _c(
       "form",
       {
@@ -63089,10 +63161,6 @@ var render = function() {
         }
       },
       [
-        _c("h6", [_vm._v("Добавить тренировку")]),
-        _vm._v(" "),
-        _c("br"),
-        _vm._v(" "),
         _c(
           "div",
           { staticClass: "form-group" },
@@ -63142,93 +63210,138 @@ var render = function() {
           1
         ),
         _vm._v(" "),
-        _c(
-          "div",
-          { staticClass: "form-group" },
-          [
-            _c("label", { attrs: { for: "stopTime" } }, [
-              _vm._v("время конца")
-            ]),
-            _c("br"),
-            _vm._v(" "),
-            _c("vue-timepicker", {
-              attrs: {
-                format: "HH:mm",
-                "input-width": "220px",
-                id: "stopTime",
-                "hide-clear-button": "",
-                "close-on-complete": ""
-              },
-              model: {
-                value: _vm.form.stopTime,
-                callback: function($$v) {
-                  _vm.$set(_vm.form, "stopTime", $$v)
+        _vm.coachName != "no"
+          ? _c(
+              "div",
+              { staticClass: "form-group" },
+              [
+                _c("label", { attrs: { for: "stopTime" } }, [
+                  _vm._v("время конца")
+                ]),
+                _c("br"),
+                _vm._v(" "),
+                _c("vue-timepicker", {
+                  attrs: {
+                    format: "HH:mm",
+                    "input-width": "220px",
+                    id: "stopTime",
+                    "hide-clear-button": "",
+                    "close-on-complete": ""
+                  },
+                  model: {
+                    value: _vm.form.stopTime,
+                    callback: function($$v) {
+                      _vm.$set(_vm.form, "stopTime", $$v)
+                    },
+                    expression: "form.stopTime"
+                  }
+                })
+              ],
+              1
+            )
+          : _vm._e(),
+        _vm._v(" "),
+        _vm.coachName != "no"
+          ? _c("div", { staticClass: "form-group" }, [
+              _c("label", { attrs: { for: "title" } }, [_vm._v("Название")]),
+              _c("br"),
+              _vm._v(" "),
+              _c("input", {
+                directives: [
+                  {
+                    name: "model",
+                    rawName: "v-model",
+                    value: _vm.form.title,
+                    expression: "form.title"
+                  }
+                ],
+                staticClass: "form-control",
+                attrs: { required: "", type: "text", id: "title" },
+                domProps: { value: _vm.form.title },
+                on: {
+                  input: function($event) {
+                    if ($event.target.composing) {
+                      return
+                    }
+                    _vm.$set(_vm.form, "title", $event.target.value)
+                  }
+                }
+              })
+            ])
+          : _vm._e(),
+        _vm._v(" "),
+        _vm.clientName != "no"
+          ? _c("div", { staticClass: "form-group" }, [
+              _c("label", { attrs: { for: "title" } }, [_vm._v("Имя")]),
+              _c("br"),
+              _vm._v(" "),
+              _c("input", {
+                directives: [
+                  {
+                    name: "model",
+                    rawName: "v-model",
+                    value: _vm.form.client,
+                    expression: "form.client"
+                  }
+                ],
+                staticClass: "form-control",
+                attrs: {
+                  required: "",
+                  type: "text",
+                  id: "title",
+                  readonly: ""
                 },
-                expression: "form.stopTime"
-              }
-            })
-          ],
-          1
-        ),
-        _vm._v(" "),
-        _c("div", { staticClass: "form-group" }, [
-          _c("label", { attrs: { for: "title" } }, [_vm._v("название")]),
-          _c("br"),
-          _vm._v(" "),
-          _c("input", {
-            directives: [
-              {
-                name: "model",
-                rawName: "v-model",
-                value: _vm.form.title,
-                expression: "form.title"
-              }
-            ],
-            staticClass: "form-control",
-            attrs: { required: "", type: "text", id: "title" },
-            domProps: { value: _vm.form.title },
-            on: {
-              input: function($event) {
-                if ($event.target.composing) {
-                  return
+                domProps: { value: _vm.form.client },
+                on: {
+                  input: function($event) {
+                    if ($event.target.composing) {
+                      return
+                    }
+                    _vm.$set(_vm.form, "client", $event.target.value)
+                  }
                 }
-                _vm.$set(_vm.form, "title", $event.target.value)
-              }
-            }
-          })
-        ]),
+              })
+            ])
+          : _vm._e(),
         _vm._v(" "),
-        _c("div", { staticClass: "form-group" }, [
-          _c("label", { attrs: { for: "coach" } }, [_vm._v("имя тренера")]),
-          _c("br"),
-          _vm._v(" "),
-          _c("input", {
-            directives: [
-              {
-                name: "model",
-                rawName: "v-model",
-                value: _vm.form.coach,
-                expression: "form.coach"
-              }
-            ],
-            staticClass: "form-control",
-            attrs: { required: "", type: "text", id: "coach" },
-            domProps: { value: _vm.form.coach },
-            on: {
-              input: function($event) {
-                if ($event.target.composing) {
-                  return
+        _vm.coachName != "no"
+          ? _c("div", { staticClass: "form-group" }, [
+              _c("label", { attrs: { for: "coach" } }, [_vm._v("имя тренера")]),
+              _c("br"),
+              _vm._v(" "),
+              _c("input", {
+                directives: [
+                  {
+                    name: "model",
+                    rawName: "v-model",
+                    value: _vm.form.coach,
+                    expression: "form.coach"
+                  }
+                ],
+                staticClass: "form-control",
+                attrs: {
+                  required: "",
+                  type: "text",
+                  id: "coach",
+                  readonly: ""
+                },
+                domProps: { value: _vm.form.coach },
+                on: {
+                  input: function($event) {
+                    if ($event.target.composing) {
+                      return
+                    }
+                    _vm.$set(_vm.form, "coach", $event.target.value)
+                  }
                 }
-                _vm.$set(_vm.form, "coach", $event.target.value)
-              }
-            }
-          })
-        ]),
+              })
+            ])
+          : _vm._e(),
         _vm._v(" "),
         _c(
           "button",
           { staticClass: "btn btn-success", attrs: { type: "submit" } },
-          [_vm._v("Добавить")]
+          [_vm._v(_vm._s(_vm.coachName == "no" ? "Записаться" : "Добавить"))]
         )
       ]
     )
@@ -63372,7 +63485,7 @@ var render = function() {
               : _vm._e(),
             _vm._v(" "),
             _vm._l(_vm.coaches, function(coach) {
-              return _c("li", [
+              return _c("li", { key: coach }, [
                 _vm.filter.coach != coach
                   ? _c(
                       "a",
@@ -63406,7 +63519,7 @@ var render = function() {
             _vm._m(0),
             _vm._v(" "),
             _vm._l(7, function(e, i) {
-              return _c("th", { staticClass: "day-header" }, [
+              return _c("th", { key: e, staticClass: "day-header" }, [
                 _c("p", [_vm._v(_vm._s(_vm.weekDays[i]))]),
                 _vm._v(" "),
                 _c("p", [_vm._v(_vm._s(_vm.weekDaysString[i]))])
@@ -63419,6 +63532,7 @@ var render = function() {
         _vm._l(_vm.table, function(time) {
           return _c(
             "tr",
+            { key: time.hour },
             [
               _c("td", { staticClass: "table-time" }, [
                 _vm._v(_vm._s(time.hour))
@@ -63427,65 +63541,89 @@ var render = function() {
               _vm._l(_vm.weekDaysTable, function(day) {
                 return _c(
                   "td",
+                  { key: day },
                   _vm._l(time[day], function(training) {
-                    return _c("div", { staticClass: "training-card" }, [
-                      _c("div", { staticClass: "training-status" }, [
-                        _vm._v(
-                          "\n                        " +
-                            _vm._s(
-                              training.available
-                                ? "свободно"
-                                : training.client_name
-                            ) +
-                            "\n                    "
-                        )
-                      ]),
-                      _vm._v(" "),
-                      _c("div", { staticClass: "training-time" }, [
-                        _vm._v(
-                          "\n                        " +
-                            _vm._s(training.time_start) +
-                            " - " +
-                            _vm._s(training.time_stop) +
-                            "\n                    "
-                        )
-                      ]),
-                      _vm._v(" "),
-                      _c("div", { staticClass: "training-title" }, [
-                        _vm._v(
-                          "\n                        " +
-                            _vm._s(training.title) +
-                            "\n                    "
-                        )
-                      ]),
-                      _vm._v(" "),
-                      _c("div", { staticClass: "training-coach" }, [
-                        _vm._v(
-                          "\n                        " +
-                            _vm._s(training.coach_name) +
-                            "\n                    "
-                        )
-                      ]),
-                      _vm._v(" "),
-                      training.available
-                        ? _c(
-                            "button",
-                            {
-                              staticClass: "training-btn",
-                              on: {
-                                click: function($event) {
-                                  return _vm.show(training.id)
-                                }
-                              }
-                            },
-                            [
-                              _vm._v(
-                                "\n                        Записаться\n                    "
-                              )
-                            ]
+                    return _c(
+                      "div",
+                      { key: training.id, staticClass: "training-card" },
+                      [
+                        _c("div", { staticClass: "training-status" }, [
+                          _vm._v(
+                            "\n                        " +
+                              _vm._s(
+                                training.available
+                                  ? "свободно"
+                                  : training.client_name
+                              ) +
+                              "\n                    "
                           )
-                        : _vm._e()
-                    ])
+                        ]),
+                        _vm._v(" "),
+                        _c("div", { staticClass: "training-time" }, [
+                          _vm._v(
+                            "\n                        " +
+                              _vm._s(training.time_start) +
+                              " - " +
+                              _vm._s(training.time_stop) +
+                              "\n                    "
+                          )
+                        ]),
+                        _vm._v(" "),
+                        _c("div", { staticClass: "training-title" }, [
+                          _vm._v(
+                            "\n                        " +
+                              _vm._s(training.title) +
+                              "\n                    "
+                          )
+                        ]),
+                        _vm._v(" "),
+                        _c("div", { staticClass: "training-coach" }, [
+                          _vm._v(
+                            "\n                        " +
+                              _vm._s(training.coach_name) +
+                              "\n                    "
+                          )
+                        ]),
+                        _vm._v(" "),
+                        training.available && _vm.coachUser == "false"
+                          ? _c(
+                              "button",
+                              {
+                                staticClass: "training-btn",
+                                on: {
+                                  click: function($event) {
+                                    return _vm.show(training.id)
+                                  }
+                                }
+                              },
+                              [
+                                _vm._v(
+                                  "\n                        Записаться\n                    "
+                                )
+                              ]
+                            )
+                          : _vm._e(),
+                        _vm._v(" "),
+                        _vm.coachUser == "true"
+                          ? _c(
+                              "button",
+                              {
+                                staticClass: "training-btn delete",
+                                on: {
+                                  click: function($event) {
+                                    return _vm.show(training.id)
+                                  }
+                                }
+                              },
+                              [
+                                _vm._v(
+                                  "\n                        Удалить\n                    "
+                                )
+                              ]
+                            )
+                          : _vm._e()
+                      ]
+                    )
                   }),
                   0
                 )
@@ -63512,89 +63650,156 @@ var render = function() {
                       attrs: { role: "document" }
                     },
                     [
-                      _c("div", { staticClass: "modal-content" }, [
-                        _c("div", { staticClass: "modal-header" }, [
-                          _c("h5", { staticClass: "modal-title" }, [
-                            _vm._v("Запись на тренировку")
-                          ]),
-                          _vm._v(" "),
-                          _c(
-                            "button",
-                            {
-                              staticClass: "close",
-                              attrs: {
-                                type: "button",
-                                "data-dismiss": "modal",
-                                "aria-label": "Close"
-                              },
-                              on: { click: _vm.hide }
-                            },
-                            [
-                              _c("span", { attrs: { "aria-hidden": "true" } }, [
-                                _vm._v("×")
-                              ])
-                            ]
-                          )
-                        ]),
-                        _vm._v(" "),
-                        _c("div", { staticClass: "modal-body" }, [
-                          _c(
-                            "form",
-                            {
-                              on: {
-                                submit: function($event) {
-                                  $event.preventDefault()
-                                }
-                              }
-                            },
-                            [
-                              _c("div", { staticClass: "form-group" }, [
-                                _c("label", { attrs: { for: "clientName" } }, [
-                                  _vm._v("Ваше имя:")
-                                ]),
-                                _vm._v(" "),
-                                _c("input", {
-                                  directives: [
-                                    {
-                                      name: "model",
-                                      rawName: "v-model",
-                                      value: _vm.clientName,
-                                      expression: "clientName"
-                                    }
-                                  ],
-                                  staticClass: "form-control",
-                                  attrs: {
-                                    type: "text",
-                                    id: "clientName",
-                                    required: ""
-                                  },
-                                  domProps: { value: _vm.clientName },
-                                  on: {
-                                    input: function($event) {
-                                      if ($event.target.composing) {
-                                        return
-                                      }
-                                      _vm.clientName = $event.target.value
-                                    }
-                                  }
-                                })
+                      _vm.coachUser == "false"
+                        ? _c("div", { staticClass: "modal-content" }, [
+                            _c("div", { staticClass: "modal-header" }, [
+                              _c("h5", { staticClass: "modal-title" }, [
+                                _vm._v("Запись на тренировку")
                               ]),
-                              _vm._v(" "),
-                              _c("br"),
                               _vm._v(" "),
                               _c(
                                 "button",
                                 {
-                                  staticClass: "btn btn-success",
-                                  attrs: { type: "submit" },
-                                  on: { click: _vm.book }
+                                  staticClass: "close",
+                                  attrs: {
+                                    type: "button",
+                                    "data-dismiss": "modal",
+                                    "aria-label": "Close"
+                                  },
+                                  on: { click: _vm.hide }
                                 },
-                                [_vm._v("Записаться")]
+                                [
+                                  _c(
+                                    "span",
+                                    { attrs: { "aria-hidden": "true" } },
+                                    [_vm._v("×")]
+                                  )
+                                ]
                               )
-                            ]
-                          )
-                        ])
-                      ])
+                            ]),
+                            _vm._v(" "),
+                            _c("div", { staticClass: "modal-body" }, [
+                              _c(
+                                "form",
+                                {
+                                  on: {
+                                    submit: function($event) {
+                                      $event.preventDefault()
+                                    }
+                                  }
+                                },
+                                [
+                                  _c("div", { staticClass: "form-group" }, [
+                                    _c(
+                                      "label",
+                                      { attrs: { for: "clientName" } },
+                                      [_vm._v("Ваше имя:")]
+                                    ),
+                                    _vm._v(" "),
+                                    _c("input", {
+                                      directives: [
+                                        {
+                                          name: "model",
+                                          rawName: "v-model",
+                                          value: _vm.clientName,
+                                          expression: "clientName"
+                                        }
+                                      ],
+                                      staticClass: "form-control",
+                                      attrs: {
+                                        type: "text",
+                                        id: "clientName",
+                                        required: ""
+                                      },
+                                      domProps: { value: _vm.clientName },
+                                      on: {
+                                        input: function($event) {
+                                          if ($event.target.composing) {
+                                            return
+                                          }
+                                          _vm.clientName = $event.target.value
+                                        }
+                                      }
+                                    })
+                                  ]),
+                                  _vm._v(" "),
+                                  _c("br"),
+                                  _vm._v(" "),
+                                  _c(
+                                    "button",
+                                    {
+                                      staticClass: "btn btn-success",
+                                      attrs: { type: "submit" },
+                                      on: { click: _vm.book }
+                                    },
+                                    [_vm._v("Записаться")]
+                                  )
+                                ]
+                              )
+                            ])
+                          ])
+                        : _vm._e(),
+                      _vm._v(" "),
+                      _vm.coachUser == "true"
+                        ? _c("div", { staticClass: "modal-content" }, [
+                            _c("div", { staticClass: "modal-header" }, [
+                              _c("h5", { staticClass: "modal-title" }, [
+                                _vm._v("Удаление тренировки")
+                              ]),
+                              _vm._v(" "),
+                              _c(
+                                "button",
+                                {
+                                  staticClass: "close",
+                                  attrs: {
+                                    type: "button",
+                                    "data-dismiss": "modal",
+                                    "aria-label": "Close"
+                                  },
+                                  on: { click: _vm.hide }
+                                },
+                                [
+                                  _c(
+                                    "span",
+                                    { attrs: { "aria-hidden": "true" } },
+                                    [_vm._v("×")]
+                                  )
+                                ]
+                              )
+                            ]),
+                            _vm._v(" "),
+                            _c("div", { staticClass: "modal-body" }, [
+                              _c(
+                                "form",
+                                {
+                                  on: {
+                                    submit: function($event) {
+                                      $event.preventDefault()
+                                    }
+                                  }
+                                },
+                                [
+                                  _vm._v(
+                                    "\n                                    Вы уверены, что хотите удалить тренировку?\n                                    "
+                                  ),
+                                  _c("br"),
+                                  _vm._v(" "),
+                                  _c("br"),
+                                  _vm._v(" "),
+                                  _c(
+                                    "button",
+                                    {
+                                      staticClass: "btn btn-danger",
+                                      attrs: { type: "submit" },
+                                      on: { click: _vm.pop }
+                                    },
+                                    [_vm._v("Удалить")]
+                                  )
+                                ]
+                              )
+                            ])
+                          ])
+                        : _vm._e()
                     ]
                   )
                 ])
@@ -63638,7 +63843,7 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div", [_c("add"), _vm._v(" "), _c("schedule")], 1)
+  return _c("div", [_c("schedule")], 1)
 }
 var staticRenderFns = []
 render._withStripped = true

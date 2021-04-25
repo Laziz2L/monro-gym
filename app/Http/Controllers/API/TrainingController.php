@@ -10,6 +10,20 @@ use Illuminate\Support\Facades\Validator;
 
 class TrainingController extends Controller
 {
+    public function pop(Request $request)
+    {
+        try {
+            $training = Training::find($request->input('id'));
+            $res = $training->delete();
+            return [
+                'status' => true,
+                'res' => $res
+            ];
+        } catch (\Exception $e) {
+            return $e->getMessage();
+        }
+    }
+
     public function book(Request $request)
     {
         try {
@@ -80,8 +94,7 @@ class TrainingController extends Controller
                 "date" => ['required'],
                 "startTime" => ['required'],
                 "stopTime" => ['required'],
-                "title" => ['required'],
-                "coach" => ['required'],
+                "title" => ['required']
             ]
         );
 
@@ -101,14 +114,28 @@ class TrainingController extends Controller
 //            'title' => $request->input('title'),
 //        ]);
 
-        $training = Training::create([
-            'date' => $request->input('date'),
-            'time_start' => $request->input('startTime'),
-            'time_stop' => $request->input('stopTime'),
-            'available' => true,
-            'coach_name' => $request->input('coach'),
-            'title' => $request->input('title'),
-        ]);
+        if ($request->input('coach') != 'no') {
+            $training = Training::create([
+                'date' => $request->input('date'),
+                'time_start' => $request->input('startTime'),
+                'time_stop' => $request->input('stopTime'),
+                'available' => true,
+                'coach_name' => $request->input('coach'),
+                'title' => $request->input('title'),
+            ]);
+        }
+        else {
+            $training = Training::create([
+                'date' => $request->input('date'),
+                'time_start' => $request->input('startTime'),
+                'time_stop' => $request->input('stopTime'),
+                'available' => false,
+                'coach_name' => 'Без тренера',
+                'client_name' => $request->input('client'),
+                'title' => $request->input('title'),
+            ]);
+        }
+
 
 
         return [

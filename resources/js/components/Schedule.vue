@@ -14,7 +14,7 @@
                 <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
                     <li v-if="filter.coach != 'all'"><a class="dropdown-item" href="#"
                                                         @click="filter.coach = 'all'">Все</a></li>
-                    <li v-for="coach in coaches"><a v-if="filter.coach != coach" class="dropdown-item" href="#"
+                    <li v-for="coach in coaches" :key="coach"><a v-if="filter.coach != coach" class="dropdown-item" href="#"
                                                     @click="filter.coach = coach">{{ coach }}</a></li>
                 </ul>
             </div>
@@ -25,15 +25,15 @@
                 <th class="table-clock">
                     <img height="20" width="20" src="img/clock.svg">
                 </th>
-                <th v-for="(e, i) in 7" class="day-header">
+                <th v-for="(e, i) in 7" class="day-header" :key="e">
                     <p>{{ weekDays[i] }}</p>
                     <p>{{ weekDaysString[i] }}</p>
                 </th>
             </tr>
-            <tr v-for="time in table">
+            <tr v-for="time in table" :key="time.hour">
                 <td class="table-time">{{ time.hour }}</td>
-                <td v-for="day in weekDaysTable">
-                    <div v-for="training in time[day]" class="training-card">
+                <td v-for="day in weekDaysTable" :key="day">
+                    <div v-for="training in time[day]" class="training-card" :key="training.id">
                         <div class="training-status">
                             {{ training.available ? "свободно" : training.client_name }}
                         </div>
@@ -46,8 +46,11 @@
                         <div class="training-coach">
                             {{ training.coach_name }}
                         </div>
-                        <button v-if="training.available" class="training-btn" @click="show(training.id)">
+                        <button v-if="training.available && coachUser=='false'" class="training-btn" @click="show(training.id)">
                             Записаться
+                        </button>
+                        <button v-if="coachUser=='true'" class="training-btn delete" @click="show(training.id)">
+                            Удалить
                         </button>
 
                     </div>
@@ -60,7 +63,7 @@
                 <div class="modal-mask">
                     <div class="modal-wrapper">
                         <div class="modal-dialog" role="document">
-                            <div class="modal-content">
+                            <div v-if="coachUser=='false'" class="modal-content">
                                 <div class="modal-header">
                                     <h5 class="modal-title">Запись на тренировку</h5>
                                     <button type="button" class="close" data-dismiss="modal" aria-label="Close" @click="hide">
@@ -78,6 +81,22 @@
                                     </form>
                                 </div>
                             </div>
+                            <div v-if="coachUser=='true'" class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title">Удаление тренировки</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close" @click="hide">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <form @submit.prevent="">
+                                        Вы уверены, что хотите удалить тренировку?
+                                        <br>
+                                        <br>
+                                        <button type="submit" class="btn btn-danger" @click="pop">Удалить</button>
+                                    </form>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -90,6 +109,7 @@
 import moment from 'moment';
 
 export default {
+    props: ['coachUser'],
     data() {
         return {
             currentMonday: null,
@@ -104,7 +124,7 @@ export default {
                 coach: "all",
             },
 
-            coaches: ["Скала", "Стетхем", "Кали Масл", "Зидан"],
+            coaches: ["Татьяна", "Азалия"],
 
             table: [
                 // {
@@ -182,6 +202,21 @@ export default {
             }).then(res => {
                 if (res.data.status) {
                     console.log(res.data.res)
+                    this.load();
+                    this.hide();
+                }
+            })
+        },
+        pop: function () {
+            axios.post('/api/trainings/pop', {id: this.chosenId}, {
+                headers: {
+                    "Content-type": "application/json"
+                }
+            }).then(res => {
+                if (res.data.status) {
+                    console.log(res.data.res)
+                    this.load();
+                    this.hide();
                 }
             })
         },
@@ -334,6 +369,11 @@ export default {
                         hour['hour'] = key;
                         table.push(hour);
                     }
+
+                    table.sort(function(a, b) {
+                        return parseInt(a.hour) - parseInt(b.hour);
+                    });
+
                     this.table = table;
                 }
             })

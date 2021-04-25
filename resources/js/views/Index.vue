@@ -1,6 +1,5 @@
 <template>
     <div>
-        <add></add>
         <schedule></schedule>
     </div>
 </template>

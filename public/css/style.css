@@ -31,7 +31,7 @@ body {
     background-color: #fff;
     width: 1200px;
     padding: 30px;
-    margin: 100px auto;
+    margin: 0 auto 100px;
 }
 
 .filter {
@@ -213,17 +213,35 @@ body {
     outline: 0;
 }
 
+.training-btn.delete {
+    background-color: #b31818;
+}
+
+.training-btn.delete:hover {
+    background-color: #981414;
+}
+
+.training-btn.delete:active {
+    background-color: #770f0f;
+}
 
 
 
 
 
 .add-form {
-    width: 270px;
-    margin: 70px auto 0;
+    width: 1200px;
+    margin: 0 auto 50px;
     background-color: #fff;
     padding: 20px;
     border-radius: 5px;
+}
+
+.add-form form {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    flex-wrap: wrap;
 }
 
 .add-form .form-group {
@@ -260,4 +278,10 @@ body {
 .modal-wrapper {
     display: table-cell;
     vertical-align: middle;
+}
+
+#logout-form {
+    width: 1200px;
+    margin: 30px auto 50px;
+    text-align: right;
 }
