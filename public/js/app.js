@@ -1887,7 +1887,7 @@ __webpack_require__.r(__webpack_exports__);
 
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
-  props: ['coachName', 'clientName'],
+  props: ['coachName', 'clientName', 'userId'],
   data: function data() {
     return {
       form: {
@@ -1896,7 +1896,8 @@ __webpack_require__.r(__webpack_exports__);
         stopTime: '',
         title: '',
         client: this.clientName,
-        coach: this.coachName
+        coach: this.coachName,
+        creator: this.userId
       }
     };
   },
@@ -2107,7 +2108,7 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 //
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
-  props: ['coachUser', 'clientName'],
+  props: ['coachUser', 'clientName', 'userId'],
   data: function data() {
     return {
       currentMonday: null,
@@ -2175,12 +2176,18 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
       secondName: '',
       chosenId: 0,
       showModal: false,
-      showSecondName: false
+      showSecondName: false,
+      forDelete: false
     };
   },
   methods: {
-    show: function show(id) {
+    show: function show(id, flag) {
       this.chosenId = id;
+
+      if (flag == 1) {
+        this.forDelete = false;
+      } else this.forDelete = true;
+
       this.showModal = true;
     },
     hide: function hide() {
@@ -63613,7 +63620,7 @@ var render = function() {
                                 staticClass: "training-btn",
                                 on: {
                                   click: function($event) {
-                                    return _vm.show(training.id)
+                                    return _vm.show(training.id, 1)
                                   }
                                 }
                               },
@@ -63625,14 +63632,14 @@ var render = function() {
                             )
                           : _vm._e(),
                         _vm._v(" "),
-                        _vm.coachUser == "true"
+                        training.creator == _vm.userId
                           ? _c(
                               "button",
                               {
                                 staticClass: "training-btn delete",
                                 on: {
                                   click: function($event) {
-                                    return _vm.show(training.id)
+                                    return _vm.show(training.id, 2)
                                   }
                                 }
                               },
@@ -63671,7 +63678,7 @@ var render = function() {
                       attrs: { role: "document" }
                     },
                     [
-                      _vm.coachUser == "false"
+                      !_vm.forDelete
                         ? _c("div", { staticClass: "modal-content" }, [
                             _c("div", { staticClass: "modal-header" }, [
                               _c("h5", { staticClass: "modal-title" }, [
@@ -63853,7 +63860,7 @@ var render = function() {
                           ])
                         : _vm._e(),
                       _vm._v(" "),
-                      _vm.coachUser == "true"
+                      _vm.forDelete
                         ? _c("div", { staticClass: "modal-content" }, [
                             _c("div", { staticClass: "modal-header" }, [
                               _c("h5", { staticClass: "modal-title" }, [

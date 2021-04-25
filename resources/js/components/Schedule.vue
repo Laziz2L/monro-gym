@@ -46,10 +46,10 @@
                         <div class="training-coach">
                             {{ training.coach_name }}
                         </div>
-                        <button v-if="training.available && coachUser=='false'" class="training-btn" @click="show(training.id)">
+                        <button v-if="training.available && coachUser=='false'" class="training-btn" @click="show(training.id, 1)">
                             Записаться
                         </button>
-                        <button v-if="coachUser=='true'" class="training-btn delete" @click="show(training.id)">
+                        <button v-if="training.creator == userId" class="training-btn delete" @click="show(training.id, 2)">
                             Удалить
                         </button>
 
@@ -63,7 +63,7 @@
                 <div class="modal-mask">
                     <div class="modal-wrapper">
                         <div class="modal-dialog" role="document">
-                            <div v-if="coachUser=='false'" class="modal-content">
+                            <div v-if="!forDelete" class="modal-content">
                                 <div class="modal-header">
                                     <h5 class="modal-title">Запись на тренировку</h5>
                                     <button type="button" class="close" data-dismiss="modal" aria-label="Close" @click="hide">
@@ -91,7 +91,7 @@
                                     </form>
                                 </div>
                             </div>
-                            <div v-if="coachUser=='true'" class="modal-content">
+                            <div v-if="forDelete" class="modal-content">
                                 <div class="modal-header">
                                     <h5 class="modal-title">Удаление тренировки</h5>
                                     <button type="button" class="close" data-dismiss="modal" aria-label="Close" @click="hide">
@@ -119,7 +119,7 @@
 import moment from 'moment';
 
 export default {
-    props: ['coachUser', 'clientName'],
+    props: ['coachUser', 'clientName', 'userId'],
     data() {
         return {
             currentMonday: null,
@@ -195,11 +195,17 @@ export default {
 
             showModal: false,
             showSecondName: false,
+
+            forDelete: false,
         }
     },
     methods: {
-        show: function (id) {
+        show: function (id, flag) {
             this.chosenId = id;
+            if (flag == 1) {
+                this.forDelete = false;
+            }
+            else this.forDelete = true;
             this.showModal = true;
         },
         hide: function () {

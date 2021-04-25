@@ -38,7 +38,7 @@ import VueTimepicker from 'vue2-timepicker/src/vue-timepicker.vue';
 import moment from "moment";
 
 export default {
-    props: ['coachName', 'clientName'],
+    props: ['coachName', 'clientName', 'userId'],
     data() {
         return {
             form: {
@@ -47,7 +47,8 @@ export default {
                 stopTime: '',
                 title: '',
                 client: this.clientName,
-                coach: this.coachName
+                coach: this.coachName,
+                creator: this.userId
             }
         }
     },

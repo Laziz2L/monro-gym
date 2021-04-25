@@ -191,6 +191,7 @@ class TrainingController extends Controller
 
             if ($request->input('coach') != 'no') {
                 $training = Training::create([
+                    'creator' => $request->input('creator'),
                     'date' => $request->input('date'),
                     'time_start' => $request->input('startTime'),
                     'time_stop' => $request->input('stopTime'),
@@ -213,6 +214,7 @@ class TrainingController extends Controller
                 ];
 
                 $training = Training::create([
+                    'creator' => $request->input('creator'),
                     'date' => $request->input('date'),
                     'time_start' => $request->input('startTime'),
                     'time_stop' => $request->input('stopTime'),

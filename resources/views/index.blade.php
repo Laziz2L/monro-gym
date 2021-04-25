@@ -23,11 +23,11 @@
         </form>
 
         @if(\Illuminate\Support\Facades\Auth::user()->coach)
-            <add coach-name="{{\Illuminate\Support\Facades\Auth::user()->name}}" client-name='no'></add>
-            <schedule coach-user="true"></schedule>
+            <add coach-name="{{\Illuminate\Support\Facades\Auth::user()->name}}" client-name='no' user-id="{{\Illuminate\Support\Facades\Auth::user()->id}}"></add>
+            <schedule coach-user="true" client-name='no' user-id="{{\Illuminate\Support\Facades\Auth::user()->id}}"></schedule>
         @else
-            <add coach-name="no" client-name='{{ \Illuminate\Support\Facades\Auth::user()->name }}'></add>
-            <schedule coach-user="false" client-name='{{ \Illuminate\Support\Facades\Auth::user()->name }}'></schedule>
+            <add coach-name="no" client-name='{{ \Illuminate\Support\Facades\Auth::user()->name }}' user-id="{{\Illuminate\Support\Facades\Auth::user()->id}}"></add>
+            <schedule coach-user="false" client-name='{{ \Illuminate\Support\Facades\Auth::user()->name }}' user-id="{{\Illuminate\Support\Facades\Auth::user()->id}}"></schedule>
         @endif
     @endauth
 </div>
