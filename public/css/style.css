@@ -153,16 +153,34 @@ body {
 .training-card {
     padding: 10px;
     margin: 0 5px 10px;
-    background-color: rgb(140, 170, 243);
     color: #fff;
     font-size: 0.8rem;
     text-align: left;
     border-radius: 3px;
 }
 
-.training-card:hover {
+
+.training-card.basic-color {
+    background-color: rgb(140, 170, 243);
+}
+.training-card.basic-color:hover {
     background-color: rgb(126, 152, 217);
 }
+
+.training-card.peach-color {
+    background-color: rgb(248, 102, 92);
+}
+.training-card.peach-color:hover {
+    background-color: rgb(219, 90, 81);
+}
+
+.training-card.darkpink-color {
+    background-color: rgb(208, 52, 91);
+}
+.training-card.darkpink-color:hover {
+    background-color: rgb(187, 44, 80);
+}
+
 
 .training-status {
     margin-bottom: 5px;

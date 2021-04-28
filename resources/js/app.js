@@ -22,6 +22,7 @@ window.Vue = require('vue').default;
 Vue.component('example-component', require('./components/ExampleComponent.vue').default);
 Vue.component('schedule', require('./components/Schedule.vue').default);
 Vue.component('add', require('./components/Add.vue').default);
+Vue.component('index', require('./views/Index.vue').default);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to

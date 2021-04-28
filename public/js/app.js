@@ -1907,14 +1907,16 @@ __webpack_require__.r(__webpack_exports__);
   },
   methods: {
     store: function store() {
+      var _this = this;
+
       var request = this.form;
 
       if (this.coachName == 'no') {
         request.title = 'Тренировка';
-        var stopHour = parseInt(request.startTime.substring(0, 1), 10) + 1;
-        request.stopTime = stopHour + request.startTime.substring(1, request.startTime.length);
       }
 
+      var stopHour = parseInt(request.startTime.substring(0, 2), 10) + 1;
+      request.stopTime = stopHour + request.startTime.substring(2, request.startTime.length);
       request.date = moment__WEBPACK_IMPORTED_MODULE_2___default()(request.date).format('YYYY-MM-DD');
       axios.post('/api/trainings', request, {
         headers: {
@@ -1922,6 +1924,10 @@ __webpack_require__.r(__webpack_exports__);
         }
       }).then(function (res) {
         alert(res.data.msg);
+
+        if (res.data.status) {
+          _this.$emit('reload');
+        }
       });
     }
   }
@@ -2407,6 +2413,13 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
           alert(res.dats.msg);
         }
       });
+    },
+    cardColor: function cardColor(training) {
+      if (training.coach_name == 'Татьяна') {
+        return ' darkpink-color ';
+      } else if (training.coach_name == 'Азалия') {
+        return ' peach-color ';
+      } else return ' basic-color ';
     }
   },
   watch: {
@@ -2445,12 +2458,19 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
+  props: ['coachUser', 'coachName', 'clientName', 'userId'],
   components: {
     Schedule: _components_Schedule__WEBPACK_IMPORTED_MODULE_1__.default,
     Add: _components_Add__WEBPACK_IMPORTED_MODULE_0__.default
+  },
+  methods: {
+    reload: function reload() {
+      this.$refs.schedule.load();
+    }
   }
 });
 
@@ -2486,6 +2506,7 @@ window.Vue = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm.js"
 Vue.component('example-component', __webpack_require__(/*! ./components/ExampleComponent.vue */ "./resources/js/components/ExampleComponent.vue").default);
 Vue.component('schedule', __webpack_require__(/*! ./components/Schedule.vue */ "./resources/js/components/Schedule.vue").default);
 Vue.component('add', __webpack_require__(/*! ./components/Add.vue */ "./resources/js/components/Add.vue").default);
+Vue.component('index', __webpack_require__(/*! ./views/Index.vue */ "./resources/js/views/Index.vue").default);
 /**
  * Next, we will create a fresh Vue application instance and attach it to
  * the page. Then, you may begin adding components to this application
@@ -63239,37 +63260,6 @@ var render = function() {
         ),
         _vm._v(" "),
         _vm.coachName != "no"
-          ? _c(
-              "div",
-              { staticClass: "form-group" },
-              [
-                _c("label", { attrs: { for: "stopTime" } }, [
-                  _vm._v("время конца")
-                ]),
-                _c("br"),
-                _vm._v(" "),
-                _c("vue-timepicker", {
-                  attrs: {
-                    format: "HH:mm",
-                    "input-width": "220px",
-                    id: "stopTime",
-                    "hide-clear-button": "",
-                    "close-on-complete": ""
-                  },
-                  model: {
-                    value: _vm.form.stopTime,
-                    callback: function($$v) {
-                      _vm.$set(_vm.form, "stopTime", $$v)
-                    },
-                    expression: "form.stopTime"
-                  }
-                })
-              ],
-              1
-            )
-          : _vm._e(),
-        _vm._v(" "),
-        _vm.coachName != "no"
           ? _c("div", { staticClass: "form-group" }, [
               _c("label", { attrs: { for: "title" } }, [_vm._v("Название")]),
               _c("br"),
@@ -63573,7 +63563,11 @@ var render = function() {
                   _vm._l(time[day], function(training) {
                     return _c(
                       "div",
-                      { key: training.id, staticClass: "training-card" },
+                      {
+                        key: training.id,
+                        staticClass: "training-card",
+                        class: _vm.cardColor(training)
+                      },
                       [
                         _c("div", { staticClass: "training-status" }, [
                           _vm._v(
@@ -63963,7 +63957,29 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div", [_c("schedule")], 1)
+  return _c(
+    "div",
+    [
+      _c("add", {
+        attrs: {
+          "coach-name": _vm.coachName,
+          "client-name": _vm.clientName,
+          "user-id": _vm.userId
+        },
+        on: { reload: _vm.reload }
+      }),
+      _vm._v(" "),
+      _c("schedule", {
+        ref: "schedule",
+        attrs: {
+          "coach-user": _vm.coachUser,
+          "client-name": _vm.clientName,
+          "user-id": _vm.userId
+        }
+      })
+    ],
+    1
+  )
 }
 var staticRenderFns = []
 render._withStripped = true

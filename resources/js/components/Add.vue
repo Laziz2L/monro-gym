@@ -11,10 +11,10 @@
                 <label for="startTime">время начала</label><br>
                 <vue-timepicker format="HH:mm" input-width="220px" id="startTime" v-model="form.startTime" hide-clear-button close-on-complete></vue-timepicker>
             </div>
-            <div class="form-group" v-if="coachName != 'no'">
+            <!-- <div class="form-group" v-if="coachName != 'no'">
                 <label for="stopTime">время конца</label><br>
                 <vue-timepicker format="HH:mm" input-width="220px" id="stopTime" v-model="form.stopTime" hide-clear-button close-on-complete></vue-timepicker>
-            </div>
+            </div> -->
             <div class="form-group" v-if="coachName != 'no'">
                 <label for="title">Название</label><br>
                 <input required type="text" class="form-control" id="title" v-model="form.title">
@@ -62,9 +62,10 @@ export default {
 
             if (this.coachName == 'no') {
                 request.title = 'Тренировка';
-                let stopHour = parseInt(request.startTime.substring(0,1), 10) + 1;
-                request.stopTime = stopHour + request.startTime.substring(1, request.startTime.length);
             }
+
+            let stopHour = parseInt(request.startTime.substring(0,2), 10) + 1;
+            request.stopTime = stopHour + request.startTime.substring(2, request.startTime.length);
 
             request.date = moment(request.date).format('YYYY-MM-DD');
             axios.post('/api/trainings', request, {
@@ -73,6 +74,9 @@ export default {
                 }
             }).then(res => {
                 alert(res.data.msg);
+                if (res.data.status) {
+                    this.$emit('reload');
+                }
             })
         }
     }

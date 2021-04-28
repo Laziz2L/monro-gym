@@ -14,6 +14,30 @@ class TrainingController extends Controller
     {
         try {
             $training = Training::find($request->input('id'));
+
+            $capacityQuery = DB::table('capacities')->select('value')
+                ->where('date', $training->date)
+                ->where('hour', substr($training->time_start, 0, 2));
+
+            $capacity = 0;
+            if ($capacityQuery->exists()) {
+                $capacity = $capacityQuery->first()->value;
+            }
+
+            if ($capacity == 1) {
+                $capacityQuery->update(['value' => 0]);
+            }
+
+            else if ($capacity == 2) {
+                $name = $training->client_name;
+                if ($name) {
+                    if (stripos($name, '+')) {
+                        $capacityQuery->update(['value' => 0]);
+                    }
+                    else $capacityQuery->update(['value' => 1]);
+                }
+            }
+
             $res = $training->delete();
             return [
                 'status' => true,

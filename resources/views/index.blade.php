@@ -15,7 +15,6 @@
 <body>
 
 <div id="app">
-
     @auth
         <form id="logout-form" action="{{ route('logout') }}" method="POST">
             @csrf
@@ -23,11 +22,19 @@
         </form>
 
         @if(\Illuminate\Support\Facades\Auth::user()->coach)
-            <add coach-name="{{\Illuminate\Support\Facades\Auth::user()->name}}" client-name='no' user-id="{{\Illuminate\Support\Facades\Auth::user()->id}}"></add>
-            <schedule coach-user="true" client-name='no' user-id="{{\Illuminate\Support\Facades\Auth::user()->id}}"></schedule>
+            <index
+            coach-name="{{\Illuminate\Support\Facades\Auth::user()->name}}"
+            client-name='no'
+            user-id="{{\Illuminate\Support\Facades\Auth::user()->id}}"
+            coach-user="true"
+            ></index>
         @else
-            <add coach-name="no" client-name='{{ \Illuminate\Support\Facades\Auth::user()->name }}' user-id="{{\Illuminate\Support\Facades\Auth::user()->id}}"></add>
-            <schedule coach-user="false" client-name='{{ \Illuminate\Support\Facades\Auth::user()->name }}' user-id="{{\Illuminate\Support\Facades\Auth::user()->id}}"></schedule>
+            <index
+            coach-name="no"
+            client-name='{{ \Illuminate\Support\Facades\Auth::user()->name }}'
+            user-id="{{\Illuminate\Support\Facades\Auth::user()->id}}"
+            coach-user="false"
+            ></index>
         @endif
     @endauth
 </div>

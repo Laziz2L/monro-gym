@@ -33,7 +33,7 @@
             <tr v-for="time in table" :key="time.hour">
                 <td class="table-time">{{ time.hour }}</td>
                 <td v-for="day in weekDaysTable" :key="day">
-                    <div v-for="training in time[day]" class="training-card" :key="training.id">
+                    <div v-for="training in time[day]" class="training-card" v-bind:class="cardColor(training)" :key="training.id">
                         <div class="training-status">
                             {{ training.available ? "свободно" : training.client_name }}
                         </div>
@@ -403,6 +403,16 @@ export default {
                 }
             })
         },
+
+        cardColor(training) {
+            if (training.coach_name == 'Татьяна') {
+                return ' darkpink-color ';
+            }
+            else if (training.coach_name == 'Азалия') {
+                return ' peach-color ';
+            }
+            else return ' basic-color ';
+        }
     },
     watch: {
         filter: {
