@@ -1983,6 +1983,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! moment */ "./node_modules/moment/moment.js");
 /* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(moment__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _components_TrainingDot__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../components/TrainingDot */ "./resources/js/components/TrainingDot.vue");
 function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
 
 function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
@@ -2112,15 +2113,174 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
-  props: ['coachUser', 'clientName', 'userId'],
+  components: {
+    TrainingDot: _components_TrainingDot__WEBPACK_IMPORTED_MODULE_1__.default
+  },
+  props: ["coachUser", "clientName", "userId"],
   data: function data() {
     return {
       currentMonday: null,
       weekDays: [],
-      weekDaysString: ['Понедельник', 'Вторник', 'Среда', 'Четверг', 'Пятница', 'Суббота', 'Воскресенье'],
-      weekDaysTable: ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'],
+      weekDaysString: ["Понедельник", "Вторник", "Среда", "Четверг", "Пятница", "Суббота", "Воскресенье"],
+      shortWeekDaysString: ["пн", "вт", "ср", "чт", "пт", "сб", "вс"],
+      weekDaysTable: ["mon", "tue", "wed", "thu", "fri", "sat", "sun"],
       filter: {
         startDate: null,
         stopDate: null,
@@ -2179,11 +2339,14 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
         //     sun: [],
         // }
       ],
-      secondName: '',
+      phoneTable: [],
+      secondName: "",
       chosenId: 0,
       showModal: false,
       showSecondName: false,
-      forDelete: false
+      forDelete: false,
+      deviceWidth: 0,
+      displayMobile: false
     };
   },
   methods: {
@@ -2211,7 +2374,7 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
         request.second = this.secondName;
       }
 
-      axios.post('/api/trainings/book', request, {
+      axios.post("/api/trainings/book", request, {
         headers: {
           "Content-type": "application/json"
         }
@@ -2230,7 +2393,7 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
     pop: function pop() {
       var _this2 = this;
 
-      axios.post('/api/trainings/pop', {
+      axios.post("/api/trainings/pop", {
         id: this.chosenId
       }, {
         headers: {
@@ -2254,7 +2417,7 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
       }
 
       this.currentMonday = d;
-      this.filter.startDate = moment__WEBPACK_IMPORTED_MODULE_0___default()(d).format('DD.MM.YYYY');
+      this.filter.startDate = moment__WEBPACK_IMPORTED_MODULE_0___default()(d).format("DD.MM.YYYY");
       var d2 = new Date();
       d2.setTime(d.getTime());
       var week = [];
@@ -2265,12 +2428,12 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
         week.push(d2.getDate());
       }
 
-      this.filter.stopDate = moment__WEBPACK_IMPORTED_MODULE_0___default()(d2).format('DD.MM.YYYY');
+      this.filter.stopDate = moment__WEBPACK_IMPORTED_MODULE_0___default()(d2).format("DD.MM.YYYY");
       this.weekDays = week;
     },
     nextWeek: function nextWeek() {
       this.currentMonday.setDate(this.currentMonday.getDate() + 7);
-      this.filter.startDate = moment__WEBPACK_IMPORTED_MODULE_0___default()(this.currentMonday).format('DD.MM.YYYY'); // let sunday = new Date();
+      this.filter.startDate = moment__WEBPACK_IMPORTED_MODULE_0___default()(this.currentMonday).format("DD.MM.YYYY"); // let sunday = new Date();
       // sunday.setTime(this.currentMonday.getTime());
       // sunday.setDate(sunday.getDate() + 6);
       //
@@ -2286,12 +2449,12 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
         week.push(d.getDate());
       }
 
-      this.filter.stopDate = moment__WEBPACK_IMPORTED_MODULE_0___default()(d).format('DD.MM.YYYY');
+      this.filter.stopDate = moment__WEBPACK_IMPORTED_MODULE_0___default()(d).format("DD.MM.YYYY");
       this.weekDays = week;
     },
     prevWeek: function prevWeek() {
       this.currentMonday.setDate(this.currentMonday.getDate() - 7);
-      this.filter.startDate = moment__WEBPACK_IMPORTED_MODULE_0___default()(this.currentMonday).format('DD.MM.YYYY'); // let sunday = new Date();
+      this.filter.startDate = moment__WEBPACK_IMPORTED_MODULE_0___default()(this.currentMonday).format("DD.MM.YYYY"); // let sunday = new Date();
       // sunday.setTime(this.currentMonday.getTime());
       // sunday.setDate(sunday.getDate() + 6);
       //
@@ -2307,7 +2470,7 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
         week.push(d.getDate());
       }
 
-      this.filter.stopDate = moment__WEBPACK_IMPORTED_MODULE_0___default()(d).format('DD.MM.YYYY');
+      this.filter.stopDate = moment__WEBPACK_IMPORTED_MODULE_0___default()(d).format("DD.MM.YYYY");
       this.weekDays = week;
     },
     groupByHours: function groupByHours(table) {
@@ -2339,40 +2502,75 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
       };
 
       for (var i = 0; i < hour.length; i++) {
-        var day = moment__WEBPACK_IMPORTED_MODULE_0___default()(hour[i].date, 'YYYY-MM-DD').format('d');
+        var day = moment__WEBPACK_IMPORTED_MODULE_0___default()(hour[i].date, "YYYY-MM-DD").format("d");
 
         switch (day) {
-          case '1':
+          case "1":
             res.mon.push(hour[i]);
             break;
 
-          case '2':
+          case "2":
             res.tue.push(hour[i]);
             break;
 
-          case '3':
+          case "3":
             res.wed.push(hour[i]);
             break;
 
-          case '4':
+          case "4":
             res.thu.push(hour[i]);
             break;
 
-          case '5':
+          case "5":
             res.fri.push(hour[i]);
             break;
 
-          case '6':
+          case "6":
             res.sat.push(hour[i]);
             break;
 
-          case '0':
+          case "0":
             res.sun.push(hour[i]);
             break;
         }
       }
 
       return res;
+    },
+    setPhoneTable: function setPhoneTable(table) {
+      var days = this.groupByDays(table);
+      var daysHours = [];
+      Object.entries(days).forEach(function (day) {
+        var hours = [];
+        var res = {};
+
+        for (var i = 0; i < day[1].length; i++) {
+          var hour = day[1][i].time_start.slice(0, 2);
+
+          if (!hours.includes(hour)) {
+            hours.push(hour);
+            res[hour] = [];
+          }
+
+          res[hour].push(day[1][i]);
+        }
+
+        daysHours.push(res);
+      });
+      this.phoneTable = daysHours; // let days = [[], [], [], [], [], [], []];
+      // table.forEach(item => {
+      //     item.day = moment(item.date, 'YYYY-MM-DD').format('d');
+      //     if (item.day === 0) {
+      //         days[6].push(item);
+      //     } else {
+      //         days[item.day - 1].push(item);
+      //     }
+      //     item.hour = item.time_start.slice(0, 2);
+      // });
+      // days.forEach(day => {
+      //     let hours = [];
+      //     let res = {};
+      // });
     },
     load: function load() {
       var _this3 = this;
@@ -2382,13 +2580,15 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
       };
       request.startDate = moment__WEBPACK_IMPORTED_MODULE_0___default()(this.filter.startDate, "DD.MM.YYYY").format("YYYY-MM-DD");
       request.stopDate = moment__WEBPACK_IMPORTED_MODULE_0___default()(this.filter.stopDate, "DD.MM.YYYY").format("YYYY-MM-DD");
-      axios.post('/api/trainings/load', request, {
+      axios.post("/api/trainings/load", request, {
         headers: {
           "Content-type": "application/json"
         }
       }).then(function (res) {
         if (res.data.status) {
           var table = res.data.table;
+
+          _this3.setPhoneTable(table);
 
           var hours = _this3.groupByHours(table);
 
@@ -2401,7 +2601,7 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 
             var hour = _this3.groupByDays(value);
 
-            hour['hour'] = key;
+            hour["hour"] = key;
             table.push(hour);
           }
 
@@ -2415,11 +2615,29 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
       });
     },
     cardColor: function cardColor(training) {
-      if (training.coach_name == 'Татьяна') {
-        return ' darkpink-color ';
-      } else if (training.coach_name == 'Азалия') {
-        return ' peach-color ';
-      } else return ' basic-color ';
+      if (training.coach_name == "Татьяна") {
+        return " darkpink-color ";
+      } else if (training.coach_name == "Азалия") {
+        return " peach-color ";
+      } else return " basic-color ";
+    },
+    scrollToElement: function scrollToElement(ref) {
+      var el = document.getElementById(ref);
+
+      if (el) {
+        // Use el.scrollIntoView() to instantly scroll to the element
+        el.scrollIntoView({
+          behavior: "smooth",
+          alignToTop: true
+        });
+      }
+    },
+    updateWidth: function updateWidth() {
+      this.deviceWidth = window.innerWidth;
+
+      if (this.deviceWidth < 1210) {
+        this.displayMobile = true;
+      } else this.displayMobile = false;
     }
   },
   watch: {
@@ -2434,6 +2652,50 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
   mounted: function mounted() {
     this.thisWeek();
     this.load();
+    this.updateWidth();
+  },
+  created: function created() {
+    window.addEventListener("resize", this.updateWidth);
+  }
+});
+
+/***/ }),
+
+/***/ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5[0].rules[0].use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/TrainingDot.vue?vue&type=script&lang=js&":
+/*!******************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib/index.js??clonedRuleSet-5[0].rules[0].use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/TrainingDot.vue?vue&type=script&lang=js& ***!
+  \******************************************************************************************************************************************************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+//
+//
+//
+//
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
+  props: ['training', 'available', 'deletable'],
+  data: function data() {
+    return {};
+  },
+  methods: {
+    top: function top() {
+      if (this.training.coach_name == 'Татьяна') {
+        return ' rgb(208, 52, 91) ';
+      } else if (this.training.coach_name == 'Азалия') {
+        return ' rgb(248, 102, 92) ';
+      } else return ' rgb(140, 170, 243) ';
+    },
+    bottom: function bottom() {
+      if (this.available) {
+        return ' rgb(65, 184, 131) ';
+      } else if (this.deletable) {
+        return 'rgb(179, 24, 24)';
+      } else return this.top();
+    }
   }
 });
 
@@ -2504,6 +2766,7 @@ window.Vue = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm.js"
 // files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default))
 
 Vue.component('example-component', __webpack_require__(/*! ./components/ExampleComponent.vue */ "./resources/js/components/ExampleComponent.vue").default);
+Vue.component('training-dot', __webpack_require__(/*! ./components/TrainingDot.vue */ "./resources/js/components/TrainingDot.vue").default);
 Vue.component('schedule', __webpack_require__(/*! ./components/Schedule.vue */ "./resources/js/components/Schedule.vue").default);
 Vue.component('add', __webpack_require__(/*! ./components/Add.vue */ "./resources/js/components/Add.vue").default);
 Vue.component('index', __webpack_require__(/*! ./views/Index.vue */ "./resources/js/views/Index.vue").default);
@@ -61727,6 +61990,45 @@ component.options.__file = "resources/js/components/Schedule.vue"
 
 /***/ }),
 
+/***/ "./resources/js/components/TrainingDot.vue":
+/*!*************************************************!*\
+  !*** ./resources/js/components/TrainingDot.vue ***!
+  \*************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _TrainingDot_vue_vue_type_template_id_3cce7974___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./TrainingDot.vue?vue&type=template&id=3cce7974& */ "./resources/js/components/TrainingDot.vue?vue&type=template&id=3cce7974&");
+/* harmony import */ var _TrainingDot_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./TrainingDot.vue?vue&type=script&lang=js& */ "./resources/js/components/TrainingDot.vue?vue&type=script&lang=js&");
+/* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! !../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+/* normalize component */
+;
+var component = (0,_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__.default)(
+  _TrainingDot_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__.default,
+  _TrainingDot_vue_vue_type_template_id_3cce7974___WEBPACK_IMPORTED_MODULE_0__.render,
+  _TrainingDot_vue_vue_type_template_id_3cce7974___WEBPACK_IMPORTED_MODULE_0__.staticRenderFns,
+  false,
+  null,
+  null,
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/components/TrainingDot.vue"
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (component.exports);
+
+/***/ }),
+
 /***/ "./resources/js/views/Index.vue":
 /*!**************************************!*\
   !*** ./resources/js/views/Index.vue ***!
@@ -61811,6 +62113,22 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_0_rules_0_use_0_node_modules_vue_loader_lib_index_js_vue_loader_options_Schedule_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib/index.js??clonedRuleSet-5[0].rules[0].use[0]!../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./Schedule.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5[0].rules[0].use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/Schedule.vue?vue&type=script&lang=js&");
  /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (_node_modules_babel_loader_lib_index_js_clonedRuleSet_5_0_rules_0_use_0_node_modules_vue_loader_lib_index_js_vue_loader_options_Schedule_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__.default); 
+
+/***/ }),
+
+/***/ "./resources/js/components/TrainingDot.vue?vue&type=script&lang=js&":
+/*!**************************************************************************!*\
+  !*** ./resources/js/components/TrainingDot.vue?vue&type=script&lang=js& ***!
+  \**************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_0_rules_0_use_0_node_modules_vue_loader_lib_index_js_vue_loader_options_TrainingDot_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib/index.js??clonedRuleSet-5[0].rules[0].use[0]!../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./TrainingDot.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5[0].rules[0].use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/TrainingDot.vue?vue&type=script&lang=js&");
+ /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (_node_modules_babel_loader_lib_index_js_clonedRuleSet_5_0_rules_0_use_0_node_modules_vue_loader_lib_index_js_vue_loader_options_TrainingDot_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__.default); 
 
 /***/ }),
 
@@ -61910,6 +62228,23 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "staticRenderFns": () => (/* reexport safe */ _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_Schedule_vue_vue_type_template_id_5f748482_scoped_true___WEBPACK_IMPORTED_MODULE_0__.staticRenderFns)
 /* harmony export */ });
 /* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_Schedule_vue_vue_type_template_id_5f748482_scoped_true___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./Schedule.vue?vue&type=template&id=5f748482&scoped=true& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/Schedule.vue?vue&type=template&id=5f748482&scoped=true&");
+
+
+/***/ }),
+
+/***/ "./resources/js/components/TrainingDot.vue?vue&type=template&id=3cce7974&":
+/*!********************************************************************************!*\
+  !*** ./resources/js/components/TrainingDot.vue?vue&type=template&id=3cce7974& ***!
+  \********************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "render": () => (/* reexport safe */ _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_TrainingDot_vue_vue_type_template_id_3cce7974___WEBPACK_IMPORTED_MODULE_0__.render),
+/* harmony export */   "staticRenderFns": () => (/* reexport safe */ _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_TrainingDot_vue_vue_type_template_id_3cce7974___WEBPACK_IMPORTED_MODULE_0__.staticRenderFns)
+/* harmony export */ });
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_TrainingDot_vue_vue_type_template_id_3cce7974___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./TrainingDot.vue?vue&type=template&id=3cce7974& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/TrainingDot.vue?vue&type=template&id=3cce7974&");
 
 
 /***/ }),
@@ -63445,7 +63780,7 @@ var render = function() {
         _vm._v(" "),
         _c("p", { staticClass: "week-text" }, [
           _c("span", [_vm._v(_vm._s(_vm.filter.startDate))]),
-          _vm._v(" - "),
+          _vm._v(" -\n        "),
           _c("span", [_vm._v(_vm._s(_vm.filter.stopDate))])
         ]),
         _vm._v(" "),
@@ -63468,11 +63803,11 @@ var render = function() {
           },
           [
             _vm._v(
-              "\n                " +
+              "\n        " +
                 _vm._s(
                   _vm.filter.coach != "all" ? _vm.filter.coach : "Все тренеры"
                 ) +
-                "\n            "
+                "\n      "
             )
           ]
         ),
@@ -63527,136 +63862,338 @@ var render = function() {
       ])
     ]),
     _vm._v(" "),
-    _c(
-      "table",
-      { staticClass: "schedule-table" },
-      [
-        _c(
-          "tr",
+    !_vm.displayMobile
+      ? _c(
+          "table",
+          { staticClass: "schedule-table" },
           [
-            _vm._m(0),
-            _vm._v(" "),
-            _vm._l(7, function(e, i) {
-              return _c("th", { key: e, staticClass: "day-header" }, [
-                _c("p", [_vm._v(_vm._s(_vm.weekDays[i]))]),
+            _c(
+              "tr",
+              [
+                _vm._m(0),
                 _vm._v(" "),
-                _c("p", [_vm._v(_vm._s(_vm.weekDaysString[i]))])
-              ])
+                _vm._l(7, function(e, i) {
+                  return _c("th", { key: e, staticClass: "day-header" }, [
+                    _c("p", [_vm._v(_vm._s(_vm.weekDays[i]))]),
+                    _vm._v(" "),
+                    _c("p", [_vm._v(_vm._s(_vm.weekDaysString[i]))])
+                  ])
+                })
+              ],
+              2
+            ),
+            _vm._v(" "),
+            _vm._l(_vm.table, function(time) {
+              return _c(
+                "tr",
+                { key: time.hour },
+                [
+                  _c("td", { staticClass: "table-time" }, [
+                    _vm._v(_vm._s(time.hour))
+                  ]),
+                  _vm._v(" "),
+                  _vm._l(_vm.weekDaysTable, function(day) {
+                    return _c(
+                      "td",
+                      { key: day },
+                      _vm._l(time[day], function(training) {
+                        return _c(
+                          "div",
+                          {
+                            key: training.id,
+                            staticClass: "training-card",
+                            class: _vm.cardColor(training)
+                          },
+                          [
+                            _c("div", { staticClass: "training-status" }, [
+                              _vm._v(
+                                "\n            " +
+                                  _vm._s(
+                                    training.available
+                                      ? "свободно"
+                                      : training.client_name
+                                  ) +
+                                  "\n          "
+                              )
+                            ]),
+                            _vm._v(" "),
+                            _c("div", { staticClass: "training-time" }, [
+                              _vm._v(
+                                "\n            " +
+                                  _vm._s(training.time_start) +
+                                  " - " +
+                                  _vm._s(training.time_stop) +
+                                  "\n          "
+                              )
+                            ]),
+                            _vm._v(" "),
+                            _c("div", { staticClass: "training-title" }, [
+                              _vm._v(
+                                "\n            " +
+                                  _vm._s(training.title) +
+                                  "\n          "
+                              )
+                            ]),
+                            _vm._v(" "),
+                            _c("div", { staticClass: "training-coach" }, [
+                              _vm._v(
+                                "\n            " +
+                                  _vm._s(training.coach_name) +
+                                  "\n          "
+                              )
+                            ]),
+                            _vm._v(" "),
+                            training.available && _vm.coachUser == "false"
+                              ? _c(
+                                  "button",
+                                  {
+                                    staticClass: "training-btn",
+                                    on: {
+                                      click: function($event) {
+                                        return _vm.show(training.id, 1)
+                                      }
+                                    }
+                                  },
+                                  [
+                                    _vm._v(
+                                      "\n            Записаться\n          "
+                                    )
+                                  ]
+                                )
+                              : _vm._e(),
+                            _vm._v(" "),
+                            training.creator == _vm.userId
+                              ? _c(
+                                  "button",
+                                  {
+                                    staticClass: "training-btn delete",
+                                    on: {
+                                      click: function($event) {
+                                        return _vm.show(training.id, 2)
+                                      }
+                                    }
+                                  },
+                                  [_vm._v("\n            Удалить\n          ")]
+                                )
+                              : _vm._e()
+                          ]
+                        )
+                      }),
+                      0
+                    )
+                  })
+                ],
+                2
+              )
             })
           ],
           2
-        ),
-        _vm._v(" "),
-        _vm._l(_vm.table, function(time) {
-          return _c(
-            "tr",
-            { key: time.hour },
+        )
+      : _vm._e(),
+    _vm._v(" "),
+    _vm.displayMobile
+      ? _c("div", { staticClass: "mini-table" }, [
+          _c(
+            "table",
+            { staticClass: "schedule-table" },
             [
-              _c("td", { staticClass: "table-time" }, [
-                _vm._v(_vm._s(time.hour))
-              ]),
-              _vm._v(" "),
-              _vm._l(_vm.weekDaysTable, function(day) {
-                return _c(
-                  "td",
-                  { key: day },
-                  _vm._l(time[day], function(training) {
+              _c(
+                "tr",
+                [
+                  _vm._m(1),
+                  _vm._v(" "),
+                  _vm._l(7, function(e, i) {
                     return _c(
-                      "div",
+                      "th",
                       {
-                        key: training.id,
-                        staticClass: "training-card",
-                        class: _vm.cardColor(training)
+                        key: e,
+                        staticClass: "day-header",
+                        on: {
+                          click: function($event) {
+                            return _vm.scrollToElement(_vm.weekDaysTable[i])
+                          }
+                        }
                       },
                       [
-                        _c("div", { staticClass: "training-status" }, [
-                          _vm._v(
-                            "\n                        " +
-                              _vm._s(
-                                training.available
-                                  ? "свободно"
-                                  : training.client_name
-                              ) +
-                              "\n                    "
-                          )
-                        ]),
+                        _c("p", [_vm._v(_vm._s(_vm.weekDays[i]))]),
                         _vm._v(" "),
-                        _c("div", { staticClass: "training-time" }, [
-                          _vm._v(
-                            "\n                        " +
-                              _vm._s(training.time_start) +
-                              " - " +
-                              _vm._s(training.time_stop) +
-                              "\n                    "
-                          )
-                        ]),
-                        _vm._v(" "),
-                        _c("div", { staticClass: "training-title" }, [
-                          _vm._v(
-                            "\n                        " +
-                              _vm._s(training.title) +
-                              "\n                    "
-                          )
-                        ]),
-                        _vm._v(" "),
-                        _c("div", { staticClass: "training-coach" }, [
-                          _vm._v(
-                            "\n                        " +
-                              _vm._s(training.coach_name) +
-                              "\n                    "
-                          )
-                        ]),
-                        _vm._v(" "),
-                        training.available && _vm.coachUser == "false"
-                          ? _c(
-                              "button",
-                              {
-                                staticClass: "training-btn",
-                                on: {
-                                  click: function($event) {
-                                    return _vm.show(training.id, 1)
-                                  }
-                                }
-                              },
-                              [
-                                _vm._v(
-                                  "\n                        Записаться\n                    "
-                                )
-                              ]
-                            )
-                          : _vm._e(),
-                        _vm._v(" "),
-                        training.creator == _vm.userId
-                          ? _c(
-                              "button",
-                              {
-                                staticClass: "training-btn delete",
-                                on: {
-                                  click: function($event) {
-                                    return _vm.show(training.id, 2)
-                                  }
-                                }
-                              },
-                              [
-                                _vm._v(
-                                  "\n                        Удалить\n                    "
-                                )
-                              ]
-                            )
-                          : _vm._e()
+                        _c("p", [_vm._v(_vm._s(_vm.shortWeekDaysString[i]))])
                       ]
                     )
-                  }),
-                  0
+                  })
+                ],
+                2
+              ),
+              _vm._v(" "),
+              _vm._l(_vm.table, function(time) {
+                return _c(
+                  "tr",
+                  { key: time.hour },
+                  [
+                    _c("td", { staticClass: "table-time" }, [
+                      _vm._v(_vm._s(time.hour))
+                    ]),
+                    _vm._v(" "),
+                    _vm._l(_vm.weekDaysTable, function(day) {
+                      return _c(
+                        "td",
+                        { key: day },
+                        _vm._l(time[day], function(training) {
+                          return _c("training-dot", {
+                            key: training.id,
+                            attrs: {
+                              training: training,
+                              available:
+                                training.available && _vm.coachUser == "false",
+                              deletable: training.creator == _vm.userId
+                            }
+                          })
+                        }),
+                        1
+                      )
+                    })
+                  ],
+                  2
                 )
               })
             ],
             2
           )
-        })
-      ],
-      2
-    ),
+        ])
+      : _vm._e(),
+    _vm._v(" "),
+    _vm.displayMobile
+      ? _c(
+          "div",
+          { staticClass: "phone-table" },
+          _vm._l(_vm.phoneTable, function(day, i) {
+            return _c(
+              "table",
+              {
+                key: i,
+                staticClass: "schedule-table",
+                attrs: { id: _vm.weekDaysTable[i] }
+              },
+              [
+                _c("tr", [
+                  _vm._m(2, true),
+                  _vm._v(" "),
+                  _c("th", { staticClass: "day-header strong-width-190" }, [
+                    _c("p", [_vm._v(_vm._s(_vm.weekDays[i]))]),
+                    _vm._v(" "),
+                    _c("p", [_vm._v(_vm._s(_vm.weekDaysString[i]))])
+                  ])
+                ]),
+                _vm._v(" "),
+                _vm._l(Object.entries(day), function(ref) {
+                  var hour = ref[0]
+                  var trainings = ref[1]
+                  return _c("tr", { key: hour }, [
+                    _c("td", { staticClass: "table-time strong-width-30" }, [
+                      _vm._v(_vm._s(hour))
+                    ]),
+                    _vm._v(" "),
+                    _c(
+                      "td",
+                      { staticClass: "strong-width-190" },
+                      _vm._l(trainings, function(training) {
+                        return _c(
+                          "div",
+                          {
+                            key: training.id,
+                            staticClass: "training-card",
+                            class: _vm.cardColor(training)
+                          },
+                          [
+                            _c("div", { staticClass: "training-status" }, [
+                              _vm._v(
+                                "\n              " +
+                                  _vm._s(
+                                    training.available
+                                      ? "свободно"
+                                      : training.client_name
+                                  ) +
+                                  "\n            "
+                              )
+                            ]),
+                            _vm._v(" "),
+                            _c("div", { staticClass: "training-time" }, [
+                              _vm._v(
+                                "\n              " +
+                                  _vm._s(training.time_start) +
+                                  " - " +
+                                  _vm._s(training.time_stop) +
+                                  "\n            "
+                              )
+                            ]),
+                            _vm._v(" "),
+                            _c("div", { staticClass: "training-title" }, [
+                              _vm._v(
+                                "\n              " +
+                                  _vm._s(training.title) +
+                                  "\n            "
+                              )
+                            ]),
+                            _vm._v(" "),
+                            _c("div", { staticClass: "training-coach" }, [
+                              _vm._v(
+                                "\n              " +
+                                  _vm._s(training.coach_name) +
+                                  "\n            "
+                              )
+                            ]),
+                            _vm._v(" "),
+                            training.available && _vm.coachUser == "false"
+                              ? _c(
+                                  "button",
+                                  {
+                                    staticClass: "training-btn",
+                                    on: {
+                                      click: function($event) {
+                                        return _vm.show(training.id, 1)
+                                      }
+                                    }
+                                  },
+                                  [
+                                    _vm._v(
+                                      "\n              Записаться\n            "
+                                    )
+                                  ]
+                                )
+                              : _vm._e(),
+                            _vm._v(" "),
+                            training.creator == _vm.userId
+                              ? _c(
+                                  "button",
+                                  {
+                                    staticClass: "training-btn delete",
+                                    on: {
+                                      click: function($event) {
+                                        return _vm.show(training.id, 2)
+                                      }
+                                    }
+                                  },
+                                  [
+                                    _vm._v(
+                                      "\n              Удалить\n            "
+                                    )
+                                  ]
+                                )
+                              : _vm._e()
+                          ]
+                        )
+                      }),
+                      0
+                    )
+                  ])
+                })
+              ],
+              2
+            )
+          }),
+          0
+        )
+      : _vm._e(),
     _vm._v(" "),
     _vm.showModal
       ? _c(
@@ -63846,7 +64383,11 @@ var render = function() {
                                       staticClass: "btn btn-success",
                                       attrs: { type: "submit" }
                                     },
-                                    [_vm._v("Записаться")]
+                                    [
+                                      _vm._v(
+                                        "\n                    Записаться\n                  "
+                                      )
+                                    ]
                                   )
                                 ]
                               )
@@ -63894,7 +64435,7 @@ var render = function() {
                                 },
                                 [
                                   _vm._v(
-                                    "\n                                    Вы уверены, что хотите удалить тренировку?\n                                    "
+                                    "\n                  Вы уверены, что хотите удалить тренировку?\n                  "
                                   ),
                                   _c("br"),
                                   _vm._v(" "),
@@ -63907,7 +64448,11 @@ var render = function() {
                                       attrs: { type: "submit" },
                                       on: { click: _vm.pop }
                                     },
-                                    [_vm._v("Удалить")]
+                                    [
+                                      _vm._v(
+                                        "\n                    Удалить\n                  "
+                                      )
+                                    ]
                                   )
                                 ]
                               )
@@ -63933,8 +64478,61 @@ var staticRenderFns = [
     return _c("th", { staticClass: "table-clock" }, [
       _c("img", { attrs: { height: "20", width: "20", src: "img/clock.svg" } })
     ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("th", { staticClass: "table-clock" }, [
+      _c("img", { attrs: { height: "15", width: "15", src: "img/clock.svg" } })
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("th", { staticClass: "table-clock strong-width-30" }, [
+      _c("img", { attrs: { height: "20", width: "20", src: "img/clock.svg" } })
+    ])
   }
 ]
+render._withStripped = true
+
+
+
+/***/ }),
+
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/TrainingDot.vue?vue&type=template&id=3cce7974&":
+/*!***********************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/TrainingDot.vue?vue&type=template&id=3cce7974& ***!
+  \***********************************************************************************************************************************************************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "render": () => (/* binding */ render),
+/* harmony export */   "staticRenderFns": () => (/* binding */ staticRenderFns)
+/* harmony export */ });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c("div", {
+    staticClass: "training-dot",
+    style: {
+      background:
+        "linear-gradient( to bottom," +
+        this.top() +
+        "," +
+        this.top() +
+        " 49%, white 49%, white 51%," +
+        this.bottom() +
+        " 51% )"
+    }
+  })
+}
+var staticRenderFns = []
 render._withStripped = true
 
 
