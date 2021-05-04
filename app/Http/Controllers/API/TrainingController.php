@@ -26,15 +26,12 @@ class TrainingController extends Controller
 
             if ($capacity == 1) {
                 $capacityQuery->update(['value' => 0]);
-            }
-
-            else if ($capacity == 2) {
+            } else if ($capacity == 2) {
                 $name = $training->client_name;
                 if ($name) {
                     if (stripos($name, '+')) {
                         $capacityQuery->update(['value' => 0]);
-                    }
-                    else $capacityQuery->update(['value' => 1]);
+                    } else $capacityQuery->update(['value' => 1]);
                 }
             }
 
@@ -105,6 +102,29 @@ class TrainingController extends Controller
             $training->available = false;
             $training->client_name = $client_name;
             $res = $training->save();
+
+            if ($res) {
+                $coachName = $training->coach_name;
+                $azalia = '818164532';
+                $tatyana = '394040682';
+                $messageToCoach = 'Новая запись  Дата: ' . $training->date . '  Время: ' . $training->time_start. '  Имя: ' . $training->client_name;
+                $ch = curl_init();
+                curl_setopt_array(
+                    $ch,
+                    array(
+                        CURLOPT_URL => 'https://api.telegram.org/bot1742712187:AAFWrq0pw162p2ZFizHdJlfCxnDUeMZgrYc/sendMessage',
+                        CURLOPT_POST => TRUE,
+                        CURLOPT_RETURNTRANSFER => TRUE,
+                        CURLOPT_TIMEOUT => 10,
+                        CURLOPT_POSTFIELDS => array(
+                            'chat_id' => $coachName == 'Азалия' ? $azalia : $tatyana,
+                            'text' => $messageToCoach,
+                        ),
+                    )
+                );
+                curl_exec($ch);
+            }
+
             return [
                 'status' => true,
                 'res' => $res,
