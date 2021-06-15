@@ -21,4 +21,5 @@ use Illuminate\Support\Facades\Route;
 Route::resource('trainings', \App\Http\Controllers\API\TrainingController::class);
 Route::post('trainings/load', [\App\Http\Controllers\API\TrainingController::class, 'load']);
 Route::post('trainings/book', [\App\Http\Controllers\API\TrainingController::class, 'book']);
+Route::post('trainings/unBook', [\App\Http\Controllers\API\TrainingController::class, 'unBook']);
 Route::post('trainings/pop', [\App\Http\Controllers\API\TrainingController::class, 'pop']);

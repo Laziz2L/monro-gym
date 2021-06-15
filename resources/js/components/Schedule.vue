@@ -87,6 +87,13 @@
             >
               Удалить
             </button>
+            <button
+              v-if="training.client_id == userId"
+              class="training-btn delete"
+              @click="show(training.id, 3)"
+            >
+              Отменить
+            </button>
           </div>
         </td>
       </tr>
@@ -116,7 +123,7 @@
               :key="training.id"
               :training="training"
               :available="training.available && coachUser == 'false'"
-              :deletable="training.creator == userId"
+              :deletable="training.creator == userId || training.client_id == userId"
             ></training-dot>
           </td>
         </tr>
@@ -174,6 +181,13 @@
               >
                 Удалить
               </button>
+              <button
+                v-if="training.client_id == userId"
+                class="training-btn delete"
+                @click="show(training.id, 3)"
+              >
+                Отменить
+              </button>
             </div>
           </td>
         </tr>
@@ -185,7 +199,7 @@
         <div class="modal-mask">
           <div class="modal-wrapper">
             <div class="modal-dialog" role="document">
-              <div v-if="!forDelete" class="modal-content">
+              <div v-if="!forDelete && !forUnBook" class="modal-content">
                 <div class="modal-header">
                   <h5 class="modal-title">Запись на тренировку</h5>
                   <button
@@ -257,6 +271,30 @@
                     <br />
                     <button type="submit" class="btn btn-danger" @click="pop">
                       Удалить
+                    </button>
+                  </form>
+                </div>
+              </div>
+              <div v-if="forUnBook" class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title">Отмена записи</h5>
+                  <button
+                    type="button"
+                    class="close"
+                    data-dismiss="modal"
+                    aria-label="Close"
+                    @click="hide"
+                  >
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <div class="modal-body">
+                  <form @submit.prevent="">
+                    Вы уверены, что хотите отменить запись?
+                    <br />
+                    <br />
+                    <button type="submit" class="btn btn-danger" @click="unBook">
+                      Отменить запись
                     </button>
                   </form>
                 </div>
@@ -366,6 +404,7 @@ export default {
       showSecondName: false,
 
       forDelete: false,
+      forUnBook: false,
 
       deviceWidth: 0,
       displayMobile: false,
@@ -374,21 +413,42 @@ export default {
   methods: {
     show: function (id, flag) {
       this.chosenId = id;
-      if (flag == 1) {
-        this.forDelete = false;
-      } else this.forDelete = true;
+      if (flag == 2) this.forDelete = true;
+      else if (flag == 3) this.forUnBook = true;
       this.showModal = true;
     },
     hide: function () {
       this.showModal = false;
+      this.forDelete = false;
+      this.forUnBook = false;
     },
     book: function () {
-      let request = { id: this.chosenId, name: this.clientName };
+      let request = { id: this.chosenId, name: this.clientName, clientId: this.userId };
       if (this.showSecondName) {
         request.second = this.secondName;
       }
       axios
         .post("/api/trainings/book", request, {
+          headers: {
+            "Content-type": "application/json",
+          },
+        })
+        .then((res) => {
+          if (res.data.status) {
+            this.load();
+            this.hide();
+            this.showSecondName = false;
+          }
+          alert(res.data.msg);
+        });
+    },
+    unBook: function () {
+        let request = { id: this.chosenId, name: this.clientName };
+      if (this.showSecondName) {
+        request.second = this.secondName;
+      }
+      axios
+        .post("/api/trainings/unBook", request, {
           headers: {
             "Content-type": "application/json",
           },

@@ -1883,21 +1883,66 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
-  props: ['coachName', 'clientName', 'userId'],
+  props: ["coachName", "clientName", "userId"],
   data: function data() {
     return {
       form: {
         date: null,
-        startTime: '',
-        stopTime: '',
-        title: '',
+        startTime: "",
+        stopTime: "",
+        title: "",
         client: this.clientName,
         coach: this.coachName,
         creator: this.userId
+      },
+      disabledDates: {
+        customPredictor: function customPredictor(date) {
+          var today = new Date();
+
+          if (date.getDate() < today.getDate() && date.getMonth() == today.getMonth() && date.getFullYear() == today.getFullYear() || date.getMonth() < today.getMonth() || date.getFullYear() < today.getFullYear()) {
+            return true;
+          }
+        }
       }
     };
   },
@@ -1911,14 +1956,14 @@ __webpack_require__.r(__webpack_exports__);
 
       var request = this.form;
 
-      if (this.coachName == 'no') {
-        request.title = 'Тренировка';
+      if (this.coachName == "no") {
+        request.title = "Тренировка";
       }
 
       var stopHour = parseInt(request.startTime.substring(0, 2), 10) + 1;
       request.stopTime = stopHour + request.startTime.substring(2, request.startTime.length);
-      request.date = moment__WEBPACK_IMPORTED_MODULE_2___default()(request.date).format('YYYY-MM-DD');
-      axios.post('/api/trainings', request, {
+      request.date = moment__WEBPACK_IMPORTED_MODULE_2___default()(request.date).format("YYYY-MM-DD");
+      axios.post("/api/trainings", request, {
         headers: {
           "Content-type": "application/json"
         }
@@ -1926,7 +1971,7 @@ __webpack_require__.r(__webpack_exports__);
         alert(res.data.msg);
 
         if (res.data.status) {
-          _this.$emit('reload');
+          _this.$emit("reload");
         }
       });
     }
@@ -1996,6 +2041,44 @@ function _iterableToArrayLimit(arr, i) { if (typeof Symbol === "undefined" || !(
 
 function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -2345,6 +2428,7 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
       showModal: false,
       showSecondName: false,
       forDelete: false,
+      forUnBook: false,
       deviceWidth: 0,
       displayMobile: false
     };
@@ -2352,22 +2436,21 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
   methods: {
     show: function show(id, flag) {
       this.chosenId = id;
-
-      if (flag == 1) {
-        this.forDelete = false;
-      } else this.forDelete = true;
-
+      if (flag == 2) this.forDelete = true;else if (flag == 3) this.forUnBook = true;
       this.showModal = true;
     },
     hide: function hide() {
       this.showModal = false;
+      this.forDelete = false;
+      this.forUnBook = false;
     },
     book: function book() {
       var _this = this;
 
       var request = {
         id: this.chosenId,
-        name: this.clientName
+        name: this.clientName,
+        clientId: this.userId
       };
 
       if (this.showSecondName) {
@@ -2390,8 +2473,36 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
         alert(res.data.msg);
       });
     },
-    pop: function pop() {
+    unBook: function unBook() {
       var _this2 = this;
+
+      var request = {
+        id: this.chosenId,
+        name: this.clientName
+      };
+
+      if (this.showSecondName) {
+        request.second = this.secondName;
+      }
+
+      axios.post("/api/trainings/unBook", request, {
+        headers: {
+          "Content-type": "application/json"
+        }
+      }).then(function (res) {
+        if (res.data.status) {
+          _this2.load();
+
+          _this2.hide();
+
+          _this2.showSecondName = false;
+        }
+
+        alert(res.data.msg);
+      });
+    },
+    pop: function pop() {
+      var _this3 = this;
 
       axios.post("/api/trainings/pop", {
         id: this.chosenId
@@ -2401,9 +2512,9 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
         }
       }).then(function (res) {
         if (res.data.status) {
-          _this2.load();
+          _this3.load();
 
-          _this2.hide();
+          _this3.hide();
         }
 
         alert(res.data.msg);
@@ -2573,7 +2684,7 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
       // });
     },
     load: function load() {
-      var _this3 = this;
+      var _this4 = this;
 
       var request = {
         coach: this.filter.coach
@@ -2588,9 +2699,9 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
         if (res.data.status) {
           var table = res.data.table;
 
-          _this3.setPhoneTable(table);
+          _this4.setPhoneTable(table);
 
-          var hours = _this3.groupByHours(table);
+          var hours = _this4.groupByHours(table);
 
           table = [];
 
@@ -2599,7 +2710,7 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
                 key = _Object$entries$_i[0],
                 value = _Object$entries$_i[1];
 
-            var hour = _this3.groupByDays(value);
+            var hour = _this4.groupByDays(value);
 
             hour["hour"] = key;
             table.push(hour);
@@ -2608,7 +2719,7 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
           table.sort(function (a, b) {
             return parseInt(a.hour) - parseInt(b.hour);
           });
-          _this3.table = table;
+          _this4.table = table;
         } else {
           alert(res.dats.msg);
         }
@@ -63524,11 +63635,13 @@ var render = function() {
   return _c("div", { staticClass: "add-form" }, [
     _c("h6", [
       _vm._v(
-        _vm._s(
-          _vm.coachName == "no"
-            ? "Записаться без тренера"
-            : "Добавить тренировку"
-        )
+        "\n    " +
+          _vm._s(
+            _vm.coachName == "no"
+              ? "Записаться без тренера"
+              : "Добавить тренировку"
+          ) +
+          "\n  "
       )
     ]),
     _vm._v(" "),
@@ -63552,7 +63665,11 @@ var render = function() {
             _c("label", { attrs: { for: "date" } }, [_vm._v("выберите дату")]),
             _vm._v(" "),
             _c("datepicker", {
-              attrs: { "monday-first": true, id: "date" },
+              attrs: {
+                "monday-first": true,
+                "disabled-dates": _vm.disabledDates,
+                id: "date"
+              },
               model: {
                 value: _vm.form.date,
                 callback: function($$v) {
@@ -63694,7 +63811,13 @@ var render = function() {
         _c(
           "button",
           { staticClass: "btn btn-success", attrs: { type: "submit" } },
-          [_vm._v(_vm._s(_vm.coachName == "no" ? "Записаться" : "Добавить"))]
+          [
+            _vm._v(
+              "\n      " +
+                _vm._s(_vm.coachName == "no" ? "Записаться" : "Добавить") +
+                "\n    "
+            )
+          ]
         )
       ]
     )
@@ -63975,6 +64098,21 @@ var render = function() {
                                   },
                                   [_vm._v("\n            Удалить\n          ")]
                                 )
+                              : _vm._e(),
+                            _vm._v(" "),
+                            training.client_id == _vm.userId
+                              ? _c(
+                                  "button",
+                                  {
+                                    staticClass: "training-btn delete",
+                                    on: {
+                                      click: function($event) {
+                                        return _vm.show(training.id, 3)
+                                      }
+                                    }
+                                  },
+                                  [_vm._v("\n            Отменить\n          ")]
+                                )
                               : _vm._e()
                           ]
                         )
@@ -64045,7 +64183,9 @@ var render = function() {
                               training: training,
                               available:
                                 training.available && _vm.coachUser == "false",
-                              deletable: training.creator == _vm.userId
+                              deletable:
+                                training.creator == _vm.userId ||
+                                training.client_id == _vm.userId
                             }
                           })
                         }),
@@ -64179,6 +64319,25 @@ var render = function() {
                                     )
                                   ]
                                 )
+                              : _vm._e(),
+                            _vm._v(" "),
+                            training.client_id == _vm.userId
+                              ? _c(
+                                  "button",
+                                  {
+                                    staticClass: "training-btn delete",
+                                    on: {
+                                      click: function($event) {
+                                        return _vm.show(training.id, 3)
+                                      }
+                                    }
+                                  },
+                                  [
+                                    _vm._v(
+                                      "\n              Отменить\n            "
+                                    )
+                                  ]
+                                )
                               : _vm._e()
                           ]
                         )
@@ -64209,7 +64368,7 @@ var render = function() {
                       attrs: { role: "document" }
                     },
                     [
-                      !_vm.forDelete
+                      !_vm.forDelete && !_vm.forUnBook
                         ? _c("div", { staticClass: "modal-content" }, [
                             _c("div", { staticClass: "modal-header" }, [
                               _c("h5", { staticClass: "modal-title" }, [
@@ -64451,6 +64610,71 @@ var render = function() {
                                     [
                                       _vm._v(
                                         "\n                    Удалить\n                  "
+                                      )
+                                    ]
+                                  )
+                                ]
+                              )
+                            ])
+                          ])
+                        : _vm._e(),
+                      _vm._v(" "),
+                      _vm.forUnBook
+                        ? _c("div", { staticClass: "modal-content" }, [
+                            _c("div", { staticClass: "modal-header" }, [
+                              _c("h5", { staticClass: "modal-title" }, [
+                                _vm._v("Отмена записи")
+                              ]),
+                              _vm._v(" "),
+                              _c(
+                                "button",
+                                {
+                                  staticClass: "close",
+                                  attrs: {
+                                    type: "button",
+                                    "data-dismiss": "modal",
+                                    "aria-label": "Close"
+                                  },
+                                  on: { click: _vm.hide }
+                                },
+                                [
+                                  _c(
+                                    "span",
+                                    { attrs: { "aria-hidden": "true" } },
+                                    [_vm._v("×")]
+                                  )
+                                ]
+                              )
+                            ]),
+                            _vm._v(" "),
+                            _c("div", { staticClass: "modal-body" }, [
+                              _c(
+                                "form",
+                                {
+                                  on: {
+                                    submit: function($event) {
+                                      $event.preventDefault()
+                                    }
+                                  }
+                                },
+                                [
+                                  _vm._v(
+                                    "\n                  Вы уверены, что хотите отменить запись?\n                  "
+                                  ),
+                                  _c("br"),
+                                  _vm._v(" "),
+                                  _c("br"),
+                                  _vm._v(" "),
+                                  _c(
+                                    "button",
+                                    {
+                                      staticClass: "btn btn-danger",
+                                      attrs: { type: "submit" },
+                                      on: { click: _vm.unBook }
+                                    },
+                                    [
+                                      _vm._v(
+                                        "\n                    Отменить запись\n                  "
                                       )
                                     ]
                                   )
